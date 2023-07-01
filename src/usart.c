@@ -22,7 +22,8 @@ along with RobotsFromScratch; see the file COPYING.  If not, see
 
 #include <avr/io.h>
 
-#include "rfsavr.h"
+#include <rfsavr/usart.h>
+#include <rfsavr/errno.h>
 
 /**
  * Masks used to initialize the control registers with the flags and mode.

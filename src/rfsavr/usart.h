@@ -1,5 +1,5 @@
 /*
-rfsavr.h - Headers for the rfsavr library.
+usart.h - Functions to use the USART subsystem
 
 This file is part of RobotsFromScratch.
 
@@ -20,25 +20,10 @@ along with RobotsFromScratch; see the file COPYING.  If not, see
 <http://www.gnu.org/licenses/>.
 */
 
+#ifndef RFS_USART_H
+#define RFS_USART_H
+
 #include <stdint.h>
-
-////////////////// ERRNO ////////////////////////
-
-/**
- * Errno value.
- */
-extern uint8_t rfs_errno;
-
-/**
- * Possible error codes.
- */
-enum rfs_errno_codes {
-    RFS_EFRAME = 1,
-    RFS_EOVERRUN,
-    RFS_EPARITY
-};
-
-////////////////// USART ////////////////////////
 
 /**
  * The most typical Baudrate values.
@@ -196,3 +181,5 @@ rfs_usart_write (struct rfs_usart *usart, char data);
  */
 void
 rfs_usart_close(struct rfs_usart *usart);
+
+#endif

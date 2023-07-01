@@ -2,7 +2,6 @@
 AC_PREREQ([2.65])
 AC_INIT([librfsavr], [0.1], [toni.serranoh@gmail.com])
 AM_INIT_AUTOMAKE([-Wall -Werror foreign])
-AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_MACRO_DIRS([m4])
 
 # Normally the default prefix (root dir for most of the package installation) is "/usr/local".
@@ -37,6 +36,10 @@ fi
 
 if test "x$AVR_DEV" = "x" ; then
 AC_SUBST([AVR_DEV], [avr_DEFAULT_DEV])
+fi
+
+if test "x$AVR_PROGRAMMING_BAUDS" = "x" ; then
+AC_SUBST([AVR_PROGRAMMING_BAUDS], [avr_DEFAULT_PROGRAMMING_BAUDS])
 fi
 
 # Checks for typedefs, structures, and compiler characteristics.

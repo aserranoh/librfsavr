@@ -7,12 +7,13 @@ from time import sleep
 
 USART_PROGRAM = "testusart.hex"
 DEVICE_VARIABLE = "AVR_DEV"
+BAUDS_VARIABLE = "AVR_PROGRAMMING_BAUDS"
 ARDUINO_PARTNO = "ATMEGA328P"
-PROGRAMMING_BAUDS = 115200
 COMM_BAUDS = 19200
 SLEEP_TIME = 2
 
 DEVICE = get_environment_variable(DEVICE_VARIABLE)
+PROGRAMMING_BAUDS = int(get_environment_variable(BAUDS_VARIABLE))
 
 def test_usart():
     s = Serial(DEVICE, COMM_BAUDS, timeout=1)

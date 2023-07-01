@@ -13,3 +13,5 @@ dnl in the configure/make/install process, this is just a default if nothing is 
 AC_DEFUN([avr_DEFAULT_PREFIX], [AC_PREFIX_DEFAULT([avr_LOCAL])])
 
 AC_DEFUN([avr_DEFAULT_DEV], [/dev/ttyACM0])
+
+AC_DEFUN([avr_DEFAULT_PROGRAMMING_BAUDS], [115200])
