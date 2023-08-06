@@ -37,6 +37,7 @@ void rfs_timer16_init(struct rfs_timer_t *timer, enum rfs_timers which)
         timer->ocra = &OCR1A;
         timer->ocrb = &OCR1B;
         timer->icr = &ICR1;
+        timer->ifr = &TIFR1;
         break;
     }
 }

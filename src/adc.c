@@ -1,5 +1,5 @@
 /*
-testusart.c - Test program for the USART subsystem.
+adc.c - Use the ADC subsystem of the AVR microcontroller.
 
 This file is part of RobotsFromScratch.
 
@@ -20,19 +20,30 @@ along with RobotsFromScratch; see the file COPYING.  If not, see
 <http://www.gnu.org/licenses/>.
 */
 
-#include "rfsavr/usart.h"
+#include <rfsavr/adc.h>
 
-int
-main()
+int8_t rfs_adc_get8(uint8_t *result)
 {
-    struct rfs_usart_t usart;
-    char data;
+    const int8_t conversion_done = (ADCSRA & _BV(ADIF));
+    if (conversion_done) {
+        // Read the conversion result
+        *result = ADCH;
 
-    rfs_usart_open(&usart, RFS_USART_0, RFS_USART_ASYNC, RFS_USART_RXTX | RFS_USART_8BITS);
-    rfs_usart_setspeed(&usart, RFS_USART_B19200, F_CPU);
-    while (1) {
-        if (rfs_usart_read(&usart, &data)) {
-            while (!rfs_usart_write(&usart, data));
-        }
+        // Reset the interrupt flag
+        ADCSRA |= _BV(ADIF);
     }
+    return conversion_done;
+}
+
+int8_t rfs_adc_get16(uint16_t *result)
+{
+    const int8_t conversion_done = (ADCSRA & _BV(ADIF));
+    if (conversion_done) {
+        // Read the conversion result
+        *result = ADC;
+
+        // Reset the interrupt flag
+        ADCSRA |= _BV(ADIF);
+    }
+    return conversion_done;
 }

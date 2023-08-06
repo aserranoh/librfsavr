@@ -1,5 +1,5 @@
 /*
-testusart.c - Test program for the USART subsystem.
+string.h - String utility functions
 
 This file is part of RobotsFromScratch.
 
@@ -20,19 +20,23 @@ along with RobotsFromScratch; see the file COPYING.  If not, see
 <http://www.gnu.org/licenses/>.
 */
 
-#include "rfsavr/usart.h"
+#include <stdint.h>
 
-int
-main()
-{
-    struct rfs_usart_t usart;
-    char data;
+/**
+ * @brief Transform an integer value to an hexadecimal character
+ * 
+ * The integer value has range from 0 to 15
+ * 
+ * @param value The integer value
+ * 
+ * @returns The integer value as an hexadecimal character
+ */
+char rfs_str_itohex(uint8_t value);
 
-    rfs_usart_open(&usart, RFS_USART_0, RFS_USART_ASYNC, RFS_USART_RXTX | RFS_USART_8BITS);
-    rfs_usart_setspeed(&usart, RFS_USART_B19200, F_CPU);
-    while (1) {
-        if (rfs_usart_read(&usart, &data)) {
-            while (!rfs_usart_write(&usart, data));
-        }
-    }
-}
+/**
+ * @brief Converts a 16 bit unsigned integer to hexadecimal and put the result in the given buffer
+ * 
+ * @param value The integer value to convert to hexadecimal
+ * @param output_string The buffer where to put the hexadecimal string
+ */
+void rfs_str_u16tohex(uint16_t value, char *output_string);

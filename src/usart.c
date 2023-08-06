@@ -72,7 +72,7 @@ enum rfs_usart_clockdivisor
  *          the specified baudrate.
  */
 static uint16_t
-rfs_usart_getubrr (enum rfs_usart_baudrate baudrate, uint32_t cpu_frequency, enum rfs_usart_clockdivisor clock_divisor, uint32_t *baudrate_error)
+rfs_usart_getubrr(enum rfs_usart_baudrate baudrate, uint32_t cpu_frequency, enum rfs_usart_clockdivisor clock_divisor, uint32_t *baudrate_error)
 {
     uint16_t ubrr = 0;
     uint32_t baudrate_sum = 0;
@@ -112,7 +112,7 @@ rfs_usart_getubrr (enum rfs_usart_baudrate baudrate, uint32_t cpu_frequency, enu
 
 
 void
-rfs_usart_open (struct rfs_usart *usart, enum rfs_usart_device device, enum rfs_usart_mode mode, int32_t flags)
+rfs_usart_open(struct rfs_usart_t *usart, enum rfs_usart_device device, enum rfs_usart_mode mode, int32_t flags)
 {
     // Set the USART device
     if (device == RFS_USART_0) {
@@ -143,7 +143,7 @@ rfs_usart_open (struct rfs_usart *usart, enum rfs_usart_device device, enum rfs_
 
 
 void
-rfs_usart_setspeed (struct rfs_usart *usart, enum rfs_usart_baudrate baudrate, uint32_t cpu_frequency)
+rfs_usart_setspeed(struct rfs_usart_t *usart, enum rfs_usart_baudrate baudrate, uint32_t cpu_frequency)
 {
     uint32_t normal_speed_error;
     uint32_t double_speed_error;
@@ -164,7 +164,7 @@ rfs_usart_setspeed (struct rfs_usart *usart, enum rfs_usart_baudrate baudrate, u
 
 
 int8_t
-rfs_usart_read (struct rfs_usart *usart, char *data)
+rfs_usart_read(struct rfs_usart_t *usart, char *data)
 {
     // Check if a new byte has been received
     if ((*(usart->ucsra) & _BV(RXC0)) == 0) {
@@ -200,7 +200,7 @@ rfs_usart_read (struct rfs_usart *usart, char *data)
 
 
 int8_t
-rfs_usart_write (struct rfs_usart *usart, char data)
+rfs_usart_write(struct rfs_usart_t *usart, char data)
 {
     if (*(usart->ucsra) & _BV(UDRE0)) {
         *(usart->udr) = data;
@@ -211,7 +211,7 @@ rfs_usart_write (struct rfs_usart *usart, char data)
 
 
 void
-rfs_usart_close(struct rfs_usart *usart)
+rfs_usart_close(struct rfs_usart_t *usart)
 {
     *(usart->ucsrb) = 0;
 }

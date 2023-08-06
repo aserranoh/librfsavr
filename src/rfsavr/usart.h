@@ -101,7 +101,7 @@ enum rfs_usart_flags
 /**
  * Struct that contains all the information to operate the USART.
  */
-struct rfs_usart
+struct rfs_usart_t
 {
     volatile uint8_t *udr;
     volatile uint8_t *ucsra;
@@ -128,7 +128,7 @@ struct rfs_usart
  * @param flags Flags to configure the USART.
  */
 void
-rfs_usart_open (struct rfs_usart *usart, enum rfs_usart_device device, enum rfs_usart_mode mode, int32_t flags);
+rfs_usart_open(struct rfs_usart_t *usart, enum rfs_usart_device device, enum rfs_usart_mode mode, int32_t flags);
 
 
 /**
@@ -142,7 +142,7 @@ rfs_usart_open (struct rfs_usart *usart, enum rfs_usart_device device, enum rfs_
  * @param cpu_frequency The CPU frequency.
  */
 void
-rfs_usart_setspeed (struct rfs_usart *usart, enum rfs_usart_baudrate baudrate, uint32_t cpu_frequency);
+rfs_usart_setspeed(struct rfs_usart_t *usart, enum rfs_usart_baudrate baudrate, uint32_t cpu_frequency);
 
 
 /**
@@ -158,7 +158,7 @@ rfs_usart_setspeed (struct rfs_usart *usart, enum rfs_usart_baudrate baudrate, u
  *          - RFS_EPARITY: Parity checking is enabled and the received bit has a parity error.
  */
 int8_t
-rfs_usart_read (struct rfs_usart *usart, char *data);
+rfs_usart_read(struct rfs_usart_t *usart, char *data);
 
 
 /**
@@ -167,10 +167,10 @@ rfs_usart_read (struct rfs_usart *usart, char *data);
  * @param usart The usart to use.
  * @param data The byte to write.
  * 
- * @returns 1 if the byte have been written, 0 otherwise.
+ * @returns 1 if the byte has been written, 0 otherwise.
  */
 int8_t
-rfs_usart_write (struct rfs_usart *usart, char data);
+rfs_usart_write(struct rfs_usart_t *usart, char data);
 
 
 /**
@@ -180,6 +180,6 @@ rfs_usart_write (struct rfs_usart *usart, char data);
  * 
  */
 void
-rfs_usart_close(struct rfs_usart *usart);
+rfs_usart_close(struct rfs_usart_t *usart);
 
 #endif
