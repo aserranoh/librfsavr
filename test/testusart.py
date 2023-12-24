@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-from avrloader import Loader, LoadError
 from autotests import pass_, fail
 from avrtests import load_program, DEVICE
 from serial import Serial

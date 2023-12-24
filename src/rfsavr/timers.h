@@ -27,6 +27,18 @@ along with RobotsFromScratch; see the file COPYING.  If not, see
 #include <avr/io.h>
 
 /**
+ * @brief Struct that contains all the address to all the registers necessary to control the 8-bit timer
+ */
+struct rfs_timer8_t {
+    volatile uint8_t *cra;
+    volatile uint8_t *crb;
+    volatile uint8_t *cnt;
+    volatile uint8_t *ocra;
+    volatile uint8_t *ocrb;
+    volatile uint8_t *ifr;
+};
+
+/**
  * @brief Struct that contains all the address to all the registers necessary to control the timer
  */
 struct rfs_timer_t {
@@ -38,6 +50,14 @@ struct rfs_timer_t {
     volatile uint16_t *ocrb;
     volatile uint16_t *icr;
     volatile uint8_t *ifr;
+};
+
+/**
+ * @brief Enumeration with the 8-bit timers
+ */
+enum rfs_timer8_enum {
+    RFS_TIMER0,
+    RFS_TIMER2
 };
 
 /**
@@ -71,6 +91,14 @@ enum rfs_timer_clocks {
     RFS_TIMER16_FALLING,
     RFS_TIMER16_RAISING
 };
+
+/**
+ * @brief Initialize the 8-bit timer
+ * 
+ * @param timer The structure that contains the timer information
+ * @param which Which timer to use
+ */
+void rfs_timer8_init(struct rfs_timer8_t *timer, enum rfs_timer8_enum which);
 
 /**
  * @brief Return the timer counter value

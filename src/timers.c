@@ -26,6 +26,28 @@ along with RobotsFromScratch; see the file COPYING.  If not, see
 #define RFS_TIMER16_CRB_MODE_MASK   0b00011000
 #define RFS_TIMER16_CRB_CLOCK_MASK  0b00000111
 
+void rfs_timer8_init(struct rfs_timer8_t *timer, enum rfs_timer8_enum which)
+{
+    switch (which) {
+    case RFS_TIMER0:
+        timer->cra = &TCCR0A;
+        timer->crb = &TCCR0B;
+        timer->cnt = &TCNT0;
+        timer->ocra = &OCR0A;
+        timer->ocrb = &OCR0B;
+        timer->ifr = &TIFR0;
+        break;
+    case RFS_TIMER2:
+        timer->cra = &TCCR2A;
+        timer->crb = &TCCR2B;
+        timer->cnt = &TCNT2;
+        timer->ocra = &OCR2A;
+        timer->ocrb = &OCR2B;
+        timer->ifr = &TIFR2;
+        break;
+    }
+}
+
 void rfs_timer16_init(struct rfs_timer_t *timer, enum rfs_timers which)
 {
     switch (which) {

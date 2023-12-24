@@ -31,3 +31,6 @@ __pycache__
 *.la
 .vscode
 .libs
+*.trs
+*.hex
+*.bin
