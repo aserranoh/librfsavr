@@ -1,21 +1,16 @@
 #!/usr/bin/env python
 
-from avrloader import load, LoadError, ARDUINO_PROGRAMMER
-from autotests import get_environment_variable, skip, pass_, fail
+from avrloader import Loader, LoadError
+from autotests import pass_, fail
+from avrtests import load_program, DEVICE
 from serial import Serial
 from time import sleep
 
 USART_PROGRAM = "testusart.hex"
-DEVICE_VARIABLE = "AVR_DEV"
-BAUDS_VARIABLE = "AVR_PROGRAMMING_BAUDS"
-ARDUINO_PARTNO = "ATMEGA328P"
 COMM_BAUDS = 19200
 SLEEP_TIME = 2
 
-DEVICE = get_environment_variable(DEVICE_VARIABLE)
-PROGRAMMING_BAUDS = int(get_environment_variable(BAUDS_VARIABLE))
-
-def test_usart():
+def test_usart() -> None:
     s = Serial(DEVICE, COMM_BAUDS, timeout=1)
     # This sleep is important because the Arduino gets reset when the Serial connection is made
     sleep(SLEEP_TIME)
@@ -27,11 +22,8 @@ def test_usart():
     else:
         fail()
 
-def main():
-    try:
-        load(USART_PROGRAM, DEVICE, ARDUINO_PROGRAMMER, ARDUINO_PARTNO, PROGRAMMING_BAUDS)
-    except LoadError as e:
-        skip()
+def main() -> None:
+    load_program(USART_PROGRAM)
     test_usart()
 
 if __name__ == "__main__":

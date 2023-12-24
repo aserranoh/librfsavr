@@ -20,7 +20,7 @@ along with RobotsFromScratch; see the file COPYING.  If not, see
 <http://www.gnu.org/licenses/>.
 */
 
-#include "rfsavr.h"
+#include "rfsavr/leds.h"
 
 #include <avr/io.h>
 
@@ -28,12 +28,11 @@ along with RobotsFromScratch; see the file COPYING.  If not, see
 #define LEDS_PORT   PORTB
 #define LEDS_PIN    3
 
-int
-main()
+int main()
 {
-    struct rfs_grb led_values[LEDS_COUNT];
-    struct rfs_pin leds_pin = {.port = &LEDS_PORT, .pin = LEDS_PIN};
-    rfs_pin_output(&leds_pin);
+    struct rfs_grb_t led_values[LEDS_COUNT];
+    struct rfs_pin_t leds_pin = {.port = &LEDS_PORT, .pin = LEDS_PIN};
+    rfs_pin_setoutput(&leds_pin);
 
     for (uint8_t i = 0; i < LEDS_COUNT; i++) {
         led_values[i].green = 0;

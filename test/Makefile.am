@@ -21,4 +21,4 @@ testleds_bin_LDADD = $(TESTBIN_LDADD)
 
 check_SCRIPTS = testusart.hex testleds.hex
 CLEANFILES = $(check_SCRIPTS)
-dist_check_SCRIPTS = testusart.py testleds.py avrloader.py autotests.py
+dist_check_SCRIPTS = testusart.py testleds.py avrloader.py autotests.py avrtests.py
