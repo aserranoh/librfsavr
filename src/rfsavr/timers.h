@@ -26,6 +26,10 @@ along with RobotsFromScratch; see the file COPYING.  If not, see
 #include <stdint.h>
 #include <avr/io.h>
 
+#define RFS_TIMER8_COMA_MASK    0b11000000
+#define RFS_TIMER8_COMB_MASK    0b00110000
+#define RFS_TIMER8_CLOCK_MASK   0b00000111
+
 /**
  * @brief Struct that contains all the address to all the registers necessary to control the 8-bit timer
  */
@@ -52,12 +56,43 @@ struct rfs_timer_t {
     volatile uint8_t *ifr;
 };
 
+enum rfs_timer8_clock {
+    RFS_TIMER0_CLOCK_NONE = 0,
+    RFS_TIMER0_CLOCK_1 = 1,
+    RFS_TIMER0_CLOCK_8 = 2,
+    RFS_TIMER0_CLOCK_64 = 3,
+    RFS_TIMER0_CLOCK_256 = 4,
+    RFS_TIMER0_CLOCK_1024 = 5,
+    RFS_TIMER0_EXTERNAL_FALLING = 6,
+    RFS_TIMER0_EXTERNAL_RAISING = 7,
+    RFS_TIMER2_CLOCK_NONE = 0,
+    RFS_TIMER2_CLOCK_1 = 1,
+    RFS_TIMER2_CLOCK_8 = 2,
+    RFS_TIMER2_CLOCK_32 = 3,
+    RFS_TIMER2_CLOCK_64 = 4,
+    RFS_TIMER2_CLOCK_128 = 5,
+    RFS_TIMER2_CLOCK_256 = 6,
+    RFS_TIMER2_CLOCK_1024 = 7,
+};
+
 /**
  * @brief Enumeration with the 8-bit timers
  */
 enum rfs_timer8_enum {
     RFS_TIMER0,
     RFS_TIMER2
+};
+
+/**
+ * @brief Enumeration for the 8-bit timer modes
+ */
+enum rfs_timer8_mode {
+    RFS_TIMER8_MODE_NORMAL = 0,
+    RFS_TIMER8_MODE_PWM_PHASE_CORRECT = 1,
+    RFS_TIMER8_MODE_CTC = 2,
+    RFS_TIMER8_MODE_FAST_PWM = 3,
+    RFS_TIMER8_MODE_PWM_PHASE_CORRECT_OCRA = 9,
+    RFS_TIMER8_MODE_FAST_PWM_OCRA = 11,
 };
 
 /**
@@ -93,12 +128,71 @@ enum rfs_timer_clocks {
 };
 
 /**
+ * @brief Enumeration with the possible output modes on compare match for channel A
+ */
+enum rfs_timer_comA {
+    RFS_TIMER_COMA_NORMAL    = 0b00000000,
+    RFS_TIMER_COMA_TOGGLE    = 0b01000000,
+    RFS_TIMER_COMA_CLEAR     = 0b10000000,
+    RFS_TIMER_COMA_SET       = 0b11000000,
+    RFS_TIMER_COMA_NONINVERT = 0b10000000,
+    RFS_TIMER_COMA_INVERT    = 0b11000000,
+};
+
+/**
+ * @brief Enumeration with the possible output modes on compare match for channel B
+ */
+enum rfs_timer_comB {
+    RFS_TIMER_COMB_NORMAL    = 0b00000000,
+    RFS_TIMER_COMB_TOGGLE    = 0b00010000,
+    RFS_TIMER_COMB_CLEAR     = 0b00100000,
+    RFS_TIMER_COMB_SET       = 0b00110000,
+    RFS_TIMER_COMB_NONINVERT = 0b00100000,
+    RFS_TIMER_COMB_INVERT    = 0b00110000,
+};
+
+/**
  * @brief Initialize the 8-bit timer
  * 
  * @param timer The structure that contains the timer information
  * @param which Which timer to use
  */
 void rfs_timer8_init(struct rfs_timer8_t *timer, enum rfs_timer8_enum which);
+
+inline void rfs_timer8_set_clock(struct rfs_timer8_t *timer, enum rfs_timer8_clock clock)
+{
+    *timer->crb = (*timer->crb & ~RFS_TIMER8_CLOCK_MASK) | clock;
+}
+
+/**
+ * @brief Set the output mode for channel A on compare match
+ * 
+ * @param timer The structure that contains the timer information
+ * @param mode The channel A pin mode on compare match
+ */
+inline void rfs_timer8_set_compare_match_output_mode_A(struct rfs_timer8_t *timer, enum rfs_timer_comA mode)
+{
+    *timer->cra = ((*timer->cra & ~RFS_TIMER8_COMA_MASK) | mode);
+}
+
+/**
+ * @brief Set the output mode for channel B on compare match
+ * 
+ * @param timer The structure that contains the timer information
+ * @param mode The channel B pin mode on compare match
+ */
+inline void rfs_timer8_set_compare_match_output_mode_B(struct rfs_timer8_t *timer, enum rfs_timer_comB mode)
+{
+    *timer->cra = ((*timer->cra & ~RFS_TIMER8_COMB_MASK) | mode);
+}
+
+/**
+ * @brief Set the mode for the timer
+ * 
+ * @param timer The structure that contains the timer information
+ * @param mode The timer working mode
+ */
+void rfs_timer8_set_mode(struct rfs_timer8_t *timer, enum rfs_timer8_mode mode);
 
 /**
  * @brief Return the timer counter value

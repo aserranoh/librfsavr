@@ -22,6 +22,8 @@ along with RobotsFromScratch; see the file COPYING.  If not, see
 
 #include <rfsavr/timers.h>
 
+#define RFS_TIMER8_CRA_MODE_MASK    0b00000011
+#define RFS_TIMER8_CRB_MODE_MASK    0b00001000
 #define RFS_TIMER16_CRA_MODE_MASK   0b00000011
 #define RFS_TIMER16_CRB_MODE_MASK   0b00011000
 #define RFS_TIMER16_CRB_CLOCK_MASK  0b00000111
@@ -46,6 +48,12 @@ void rfs_timer8_init(struct rfs_timer8_t *timer, enum rfs_timer8_enum which)
         timer->ifr = &TIFR2;
         break;
     }
+}
+
+void rfs_timer8_set_mode(struct rfs_timer8_t *timer, enum rfs_timer8_mode mode)
+{
+    *timer->cra = (*timer->cra & ~RFS_TIMER8_CRA_MODE_MASK) | (mode & RFS_TIMER8_CRA_MODE_MASK);
+    *timer->crb = (*timer->crb & ~RFS_TIMER8_CRB_MODE_MASK) | (mode & RFS_TIMER8_CRB_MODE_MASK);
 }
 
 void rfs_timer16_init(struct rfs_timer_t *timer, enum rfs_timers which)
