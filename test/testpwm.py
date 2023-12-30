@@ -9,7 +9,7 @@ from typing import Callable
 PWM_PROGRAM = "testpwm.hex"
 COMM_BAUDS = 19200
 SLEEP_TIME = 2
-ALL_TESTS_SIZE = 52
+ALL_TESTS_SIZE = 53
 COMA_MASK = 0b11000000
 COMB_MASK = 0b00110000
 DDRD6_MASK = 0b01000000
@@ -67,6 +67,13 @@ def check_test_set_frequency(clock: int, mode: int) -> Callable[[list[str]], boo
         return (values[0] & CRA_MODE_MASK == mode) and (values[1] & CRB_MODE_MASK == 0) and (values[1] & CLOCK_MASK == clock)
     return check_frequency
 
+def check_test_set_frequency_exact(clock: int, mode: int, ocra: int) -> Callable[[list[str]], bool]:
+    def check_frequency(data: list[str]):
+        values = [int(x, base=16) for x in data]
+        print(values)
+        return (values[0] & CRA_MODE_MASK == mode) and (values[1] & CRB_MODE_MASK == 0b00001000) and (values[1] & CLOCK_MASK == clock) and values[2] == ocra
+    return check_frequency
+
 TESTS_CHECKS = {
     1: check_test_init,
     2: check_test_init,
@@ -80,46 +87,47 @@ TESTS_CHECKS = {
     10: check_test_disable_channel_B,
     11: check_test_set_frequency(1, PWM_MODE_FAST),
     12: check_test_set_frequency(1, PWM_MODE_FAST),
-    13: check_test_set_frequency(1, PWM_MODE_PHASE_CORRECT),
+    13: check_test_set_frequency(1, PWM_MODE_FAST),
     14: check_test_set_frequency(1, PWM_MODE_PHASE_CORRECT),
-    15: check_test_set_frequency(2, PWM_MODE_FAST),
+    15: check_test_set_frequency(1, PWM_MODE_PHASE_CORRECT),
     16: check_test_set_frequency(2, PWM_MODE_FAST),
-    17: check_test_set_frequency(2, PWM_MODE_PHASE_CORRECT),
+    17: check_test_set_frequency(2, PWM_MODE_FAST),
     18: check_test_set_frequency(2, PWM_MODE_PHASE_CORRECT),
-    19: check_test_set_frequency(3, PWM_MODE_FAST),
+    19: check_test_set_frequency(2, PWM_MODE_PHASE_CORRECT),
     20: check_test_set_frequency(3, PWM_MODE_FAST),
-    21: check_test_set_frequency(3, PWM_MODE_PHASE_CORRECT),
+    21: check_test_set_frequency(3, PWM_MODE_FAST),
     22: check_test_set_frequency(3, PWM_MODE_PHASE_CORRECT),
-    23: check_test_set_frequency(4, PWM_MODE_FAST),
+    23: check_test_set_frequency(3, PWM_MODE_PHASE_CORRECT),
     24: check_test_set_frequency(4, PWM_MODE_FAST),
-    25: check_test_set_frequency(4, PWM_MODE_PHASE_CORRECT),
+    25: check_test_set_frequency(4, PWM_MODE_FAST),
     26: check_test_set_frequency(4, PWM_MODE_PHASE_CORRECT),
-    27: check_test_set_frequency(5, PWM_MODE_FAST),
+    27: check_test_set_frequency(4, PWM_MODE_PHASE_CORRECT),
     28: check_test_set_frequency(5, PWM_MODE_FAST),
-    29: check_test_set_frequency(5, PWM_MODE_PHASE_CORRECT),
+    29: check_test_set_frequency(5, PWM_MODE_FAST),
     30: check_test_set_frequency(5, PWM_MODE_PHASE_CORRECT),
     31: check_test_set_frequency(1, PWM_MODE_FAST),
     32: check_test_set_frequency(1, PWM_MODE_FAST),
-    33: check_test_set_frequency(1, PWM_MODE_PHASE_CORRECT),
+    33: check_test_set_frequency(1, PWM_MODE_FAST),
     34: check_test_set_frequency(1, PWM_MODE_PHASE_CORRECT),
-    35: check_test_set_frequency(2, PWM_MODE_FAST),
+    35: check_test_set_frequency(1, PWM_MODE_PHASE_CORRECT),
     36: check_test_set_frequency(2, PWM_MODE_FAST),
-    37: check_test_set_frequency(2, PWM_MODE_PHASE_CORRECT),
+    37: check_test_set_frequency(2, PWM_MODE_FAST),
     38: check_test_set_frequency(2, PWM_MODE_PHASE_CORRECT),
-    39: check_test_set_frequency(3, PWM_MODE_FAST),
+    39: check_test_set_frequency(2, PWM_MODE_PHASE_CORRECT),
     40: check_test_set_frequency(3, PWM_MODE_FAST),
-    41: check_test_set_frequency(3, PWM_MODE_PHASE_CORRECT),
-    42: check_test_set_frequency(3, PWM_MODE_PHASE_CORRECT),
-    43: check_test_set_frequency(4, PWM_MODE_PHASE_CORRECT),
-    44: check_test_set_frequency(4, PWM_MODE_PHASE_CORRECT),
-    45: check_test_set_frequency(5, PWM_MODE_PHASE_CORRECT),
-    46: check_test_set_frequency(5, PWM_MODE_PHASE_CORRECT),
-    47: check_test_set_frequency(6, PWM_MODE_PHASE_CORRECT),
+    41: check_test_set_frequency(3, PWM_MODE_FAST),
+    42: check_test_set_frequency(4, PWM_MODE_FAST),
+    43: check_test_set_frequency(4, PWM_MODE_FAST),
+    44: check_test_set_frequency(5, PWM_MODE_FAST),
+    45: check_test_set_frequency(5, PWM_MODE_FAST),
+    46: check_test_set_frequency(6, PWM_MODE_FAST),
+    47: check_test_set_frequency(6, PWM_MODE_FAST),
     48: check_test_set_frequency(6, PWM_MODE_PHASE_CORRECT),
-    49: check_test_set_frequency(7, PWM_MODE_FAST),
+    49: check_test_set_frequency(6, PWM_MODE_PHASE_CORRECT),
     50: check_test_set_frequency(7, PWM_MODE_FAST),
-    51: check_test_set_frequency(7, PWM_MODE_PHASE_CORRECT),
+    51: check_test_set_frequency(7, PWM_MODE_FAST),
     52: check_test_set_frequency(7, PWM_MODE_PHASE_CORRECT),
+    53: check_test_set_frequency_exact(1, PWM_MODE_PHASE_CORRECT, 160),
 }
 
 def check_message_result(message: str) -> tuple[int, bool]:

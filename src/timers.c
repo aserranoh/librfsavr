@@ -22,8 +22,6 @@ along with RobotsFromScratch; see the file COPYING.  If not, see
 
 #include <rfsavr/timers.h>
 
-#define RFS_TIMER8_CRA_MODE_MASK    0b00000011
-#define RFS_TIMER8_CRB_MODE_MASK    0b00001000
 #define RFS_TIMER16_CRA_MODE_MASK   0b00000011
 #define RFS_TIMER16_CRB_MODE_MASK   0b00011000
 #define RFS_TIMER16_CRB_CLOCK_MASK  0b00000111

@@ -47,44 +47,74 @@ void rfs_pwm8_enable_channel_B(struct rfs_pwm8_t *pwm)
     }
 }
 
-static void rfs_pwm8_set_clock_divisor_and_mode(
-    struct rfs_pwm8_t *pwm,
-    uint32_t target_frequency,
-    uint32_t cpu_clock_frequency,
-    uint16_t *table,
-    int8_t table_size)
+void rfs_pwm8_init(struct rfs_pwm8_t *pwm, enum rfs_timer8_enum timer)
+{
+    rfs_timer8_init(&(pwm->timer), timer);
+    switch (timer) {
+    case RFS_TIMER0:
+        pwm->divisor_table = RFS_TIMER0_TABLE;
+        pwm->divisor_table_size = RFS_TIMER0_TABLE_SIZE;
+        break;
+    case RFS_TIMER2:
+        pwm->divisor_table = RFS_TIMER2_TABLE;
+        pwm->divisor_table_size = RFS_TIMER2_TABLE_SIZE;
+        break;
+    }
+}
+
+static int8_t rfs_pwm8_set_clock_divisor_and_mode(struct rfs_pwm8_t *pwm, uint32_t target_frequency, uint32_t cpu_clock_frequency)
 {
     uint32_t divisor = (cpu_clock_frequency >> 8) / target_frequency;
-    enum rfs_timer8_mode mode = RFS_TIMER8_MODE_PWM_PHASE_CORRECT;
+    enum rfs_timer8_mode mode = RFS_TIMER8_MODE_FAST_PWM;
 
-    int8_t divisor_index = -1;
-    do {
-        divisor_index++;
-        if (table[divisor_index] > divisor) {
-            mode = RFS_TIMER8_MODE_FAST_PWM;
-            break;
-        } else if ((table[divisor_index] << 1) > divisor) {
-            break;
-        }
-    } while (divisor_index < table_size - 1);
+    int8_t divisor_index = 0;
+    int8_t i = 0;
+    while (i < pwm->divisor_table_size && pwm->divisor_table[i] <= divisor) {
+        divisor_index = i++;
+    }
+    if ((pwm->divisor_table[divisor_index] << 1) <= divisor) {
+        mode = RFS_TIMER8_MODE_PWM_PHASE_CORRECT;
+    }
 
     rfs_timer8_set_mode(&pwm->timer, mode);
     rfs_timer8_set_clock(&pwm->timer, divisor_index + 1);
+
+    return divisor_index;
 }
 
 void rfs_pwm8_set_frequency(struct rfs_pwm8_t *pwm, uint32_t frequency, uint32_t cpu_frequency)
 {
-    uint16_t *table;
-    int8_t table_size;
+    rfs_pwm8_set_clock_divisor_and_mode(pwm, frequency, cpu_frequency);
+}
 
-    if (pwm->timer.cra == &TCCR0A) {
-        table = RFS_TIMER0_TABLE;
-        table_size = RFS_TIMER0_TABLE_SIZE;
-    } else {
-        table = RFS_TIMER2_TABLE;
-        table_size = RFS_TIMER2_TABLE_SIZE;
+void rfs_pwm8_set_frequency_exact(struct rfs_pwm8_t *pwm, uint32_t frequency, uint32_t cpu_frequency)
+{
+    uint8_t ocra;
+    int8_t divisor_index = rfs_pwm8_set_clock_divisor_and_mode(pwm, frequency, cpu_frequency);
+    enum rfs_timer8_mode mode = rfs_timer8_get_mode(&pwm->timer);
+
+    // Extreme case, the requested frequency is greater than the maximum frequency
+    if (frequency > (cpu_frequency >> 8)) {
+        mode = RFS_TIMER8_MODE_FAST_PWM_OCRA;
+        ocra = cpu_frequency / (frequency * pwm->divisor_table[divisor_index]);
+
+    // If the mode set by rfs_pwm8_set_clock_divisor_and_mode is FAST_PWM, then switch
+    // to PWM_PHASE_CORRECT and compute OCRA with double the divisor
+    } else if (mode == RFS_TIMER8_MODE_FAST_PWM) {
+        mode = RFS_TIMER8_MODE_PWM_PHASE_CORRECT_OCRA;
+        ocra = cpu_frequency / (frequency * (pwm->divisor_table[divisor_index] << 1));
+
+    // Finaly, if the mode set by rfs_pwm8_set_clock_divisor_and_mode is PHASE_CORRECT and
+    // there's still a greater divisor, switch to FAST_PWM mode and use the next divisor
+    // in the table (the clock source must be switched as well)
+    } else if (divisor_index + 1 < pwm->divisor_table_size) {
+        mode = RFS_TIMER8_MODE_FAST_PWM_OCRA;
+        ocra = cpu_frequency / (frequency * pwm->divisor_table[divisor_index + 1]);
+        rfs_timer8_set_clock(&pwm->timer, divisor_index + 2);
     }
-    rfs_pwm8_set_clock_divisor_and_mode(pwm, frequency, cpu_frequency, table, table_size);
+
+    rfs_timer8_set_mode(&pwm->timer, mode);
+    rfs_timer8_set_ocra(&pwm->timer, ocra);
 }
 
 /*void rfs_pwm_set_duty_cycle_8(struct rfs_pwm_t *pwm, uint8_t duty_cycle)

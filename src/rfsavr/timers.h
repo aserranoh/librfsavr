@@ -26,9 +26,11 @@ along with RobotsFromScratch; see the file COPYING.  If not, see
 #include <stdint.h>
 #include <avr/io.h>
 
-#define RFS_TIMER8_COMA_MASK    0b11000000
-#define RFS_TIMER8_COMB_MASK    0b00110000
-#define RFS_TIMER8_CLOCK_MASK   0b00000111
+#define RFS_TIMER8_COMA_MASK        0b11000000
+#define RFS_TIMER8_COMB_MASK        0b00110000
+#define RFS_TIMER8_CLOCK_MASK       0b00000111
+#define RFS_TIMER8_CRA_MODE_MASK    0b00000011
+#define RFS_TIMER8_CRB_MODE_MASK    0b00001000
 
 /**
  * @brief Struct that contains all the address to all the registers necessary to control the 8-bit timer
@@ -159,6 +161,11 @@ enum rfs_timer_comB {
  */
 void rfs_timer8_init(struct rfs_timer8_t *timer, enum rfs_timer8_enum which);
 
+inline enum rfs_timer8_mode rfs_timer8_get_mode(struct rfs_timer8_t *timer)
+{
+    return (*timer->cra & RFS_TIMER8_CRA_MODE_MASK) | (*timer->crb & RFS_TIMER8_CRB_MODE_MASK);
+}
+
 inline void rfs_timer8_set_clock(struct rfs_timer8_t *timer, enum rfs_timer8_clock clock)
 {
     *timer->crb = (*timer->crb & ~RFS_TIMER8_CLOCK_MASK) | clock;
@@ -193,6 +200,11 @@ inline void rfs_timer8_set_compare_match_output_mode_B(struct rfs_timer8_t *time
  * @param mode The timer working mode
  */
 void rfs_timer8_set_mode(struct rfs_timer8_t *timer, enum rfs_timer8_mode mode);
+
+inline void rfs_timer8_set_ocra(struct rfs_timer8_t *timer, uint8_t ocra)
+{
+    *timer->ocra = ocra;
+}
 
 /**
  * @brief Return the timer counter value

@@ -30,6 +30,8 @@ along with RobotsFromScratch; see the file COPYING.  If not, see
  */
 struct rfs_pwm8_t {
     struct rfs_timer8_t timer;
+    uint16_t *divisor_table;
+    int8_t divisor_table_size;
 };
 
 /**
@@ -38,10 +40,7 @@ struct rfs_pwm8_t {
  * @param pwm The structure that contains the PWM information
  * @param timer Which timer to use to control the PWM signal
  */
-inline void rfs_pwm8_init(struct rfs_pwm8_t *pwm, enum rfs_timer8_enum timer)
-{
-    rfs_timer8_init(&(pwm->timer), timer);
-}
+void rfs_pwm8_init(struct rfs_pwm8_t *pwm, enum rfs_timer8_enum timer);
 
 /**
  * @brief Disable PWM output on channel A
@@ -80,11 +79,42 @@ void rfs_pwm8_enable_channel_B(struct rfs_pwm8_t *pwm);
 /**
  * @brief Set the PWM signal frequency
  * 
+ * This method does not set the exact requested frequency, but the closest frequency that can be obtained
+ * using the clock prescaling values. The selected frequency will always be higher than the
+ * requested frequency, except when the requested frequency is higher than the maximum frequency that can
+ * be obtained.
+ * 
+ * The list of predefined frequencies depend on the CPU clock frequency. The predefined frequencies are those
+ * obtained of dividing the CPU clock frequency by 256, 512, 2048, 4096, 16384, 32768, 65536, 131072, 262144
+ * and 524288. For instance, for a CPU clock frequency of 16 MHz, the predefined PWM frequencies are:
+ * 62.5 kHz, 31.25 kHz, 7812.5 Hz, 3906.25 Hz, 976.56 Hz, 488.28 Hz, 244.14 Hz, 122.07 Hz, 61.04 Hz and 30.52 Hz.
+ * 
  * @param pwm The structure that contains the PWM information
- * @param frequency The PWM signal frequency
+ * @param frequency The requested PWM signal frequency
  * @param cpu_frequency The CPU's clock frequency
  */
 void rfs_pwm8_set_frequency(struct rfs_pwm8_t *pwm, uint32_t frequency, uint32_t cpu_frequency);
+
+/**
+ * @brief Set an extact value for the PWM signal frequency
+ * 
+ * This method will try to set the exact requested PWM frequency. For that, first an aproximate value
+ * is selected, like it is done by the rfs_pwm8_set_frequency method. Finally, the corresponding timer
+ * is configured to use the value in OCRA tor the TOP value, and a suitable value for OCRA is computed
+ * to obtain the requested frequency.
+ * 
+ * When the frequency is set using this method, it won't make sense to set a duty cycle greater than the
+ * value in the OCRA register.
+ * 
+ * This method obtains the exact requested frequency by sacrificing resolution. The 8-bit timers offer
+ * a maximum resolution of 256 different values for the duty cycle. The lower the used OCRA value,
+ * the lower the resolution.
+ * 
+ * @param pwm The structure that contains the PWM information
+ * @param frequency The requested PWM signal frequency
+ * @param cpu_frequency The CPU's clock frequency
+ */
+void rfs_pwm8_set_frequency_exact(struct rfs_pwm8_t *pwm, uint32_t frequency, uint32_t cpu_frequency);
 
 /*void rfs_pwm_set_duty_cycle_8(struct rfs_pwm_t *pwm, uint8_t duty_cycle);
 void rfs_pwm_set_duty_cycle_16(struct rfs_pwm_t *pwm, uint16_t duty_cycle);
