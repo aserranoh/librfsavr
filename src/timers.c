@@ -31,19 +31,9 @@ void rfs_timer8_init(struct rfs_timer8_t *timer, enum rfs_timer8_enum which)
     switch (which) {
     case RFS_TIMER0:
         timer->cra = &TCCR0A;
-        timer->crb = &TCCR0B;
-        timer->cnt = &TCNT0;
-        timer->ocra = &OCR0A;
-        timer->ocrb = &OCR0B;
-        timer->ifr = &TIFR0;
         break;
     case RFS_TIMER2:
         timer->cra = &TCCR2A;
-        timer->crb = &TCCR2B;
-        timer->cnt = &TCNT2;
-        timer->ocra = &OCR2A;
-        timer->ocrb = &OCR2B;
-        timer->ifr = &TIFR2;
         break;
     }
 }
@@ -51,7 +41,7 @@ void rfs_timer8_init(struct rfs_timer8_t *timer, enum rfs_timer8_enum which)
 void rfs_timer8_set_mode(struct rfs_timer8_t *timer, enum rfs_timer8_mode mode)
 {
     *timer->cra = (*timer->cra & ~RFS_TIMER8_CRA_MODE_MASK) | (mode & RFS_TIMER8_CRA_MODE_MASK);
-    *timer->crb = (*timer->crb & ~RFS_TIMER8_CRB_MODE_MASK) | (mode & RFS_TIMER8_CRB_MODE_MASK);
+    *rfs_timer8_crb(timer) = (*rfs_timer8_crb(timer) & ~RFS_TIMER8_CRB_MODE_MASK) | (mode & RFS_TIMER8_CRB_MODE_MASK);
 }
 
 void rfs_timer16_init(struct rfs_timer_t *timer, enum rfs_timers which)

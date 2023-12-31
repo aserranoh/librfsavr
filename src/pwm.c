@@ -27,39 +27,35 @@ static int8_t RFS_TIMER0_TABLE_SIZE = 5;
 static uint16_t RFS_TIMER2_TABLE[] = {1, 8, 32, 64, 128, 256, 1024};
 static int8_t RFS_TIMER2_TABLE_SIZE = 7;
 
-void rfs_pwm8_enable_channel_A(struct rfs_pwm8_t *pwm)
-{
-    rfs_timer8_set_compare_match_output_mode_A(&pwm->timer, RFS_TIMER_COMA_NONINVERT);
-    if (pwm->timer.cra == &TCCR0A) {
-        DDRD |= _BV(6);
-    } else {
-        DDRB |= _BV(3);
-    }
-}
-
-void rfs_pwm8_enable_channel_B(struct rfs_pwm8_t *pwm)
-{
-    rfs_timer8_set_compare_match_output_mode_B(&pwm->timer, RFS_TIMER_COMB_NONINVERT);
-    if (pwm->timer.cra == &TCCR0A) {
-        DDRD |= _BV(5);
-    } else {
-        DDRD |= _BV(3);
-    }
-}
-
 void rfs_pwm8_init(struct rfs_pwm8_t *pwm, enum rfs_timer8_enum timer)
 {
     rfs_timer8_init(&(pwm->timer), timer);
     switch (timer) {
     case RFS_TIMER0:
+        rfs_pin_init(&pwm->output_a, &PORTD, 6);
+        rfs_pin_init(&pwm->output_b, &PORTD, 5);
         pwm->divisor_table = RFS_TIMER0_TABLE;
         pwm->divisor_table_size = RFS_TIMER0_TABLE_SIZE;
         break;
     case RFS_TIMER2:
+        rfs_pin_init(&pwm->output_a, &PORTB, 3);
+        rfs_pin_init(&pwm->output_b, &PORTD, 3);
         pwm->divisor_table = RFS_TIMER2_TABLE;
         pwm->divisor_table_size = RFS_TIMER2_TABLE_SIZE;
         break;
     }
+}
+
+void rfs_pwm8_enable_channel_a(struct rfs_pwm8_t *pwm)
+{
+    rfs_timer8_set_compare_match_output_mode_a(&pwm->timer, RFS_TIMER_COMA_NONINVERT);
+    rfs_pin_set_output(&pwm->output_a);
+}
+
+void rfs_pwm8_enable_channel_b(struct rfs_pwm8_t *pwm)
+{
+    rfs_timer8_set_compare_match_output_mode_b(&pwm->timer, RFS_TIMER_COMB_NONINVERT);
+    rfs_pin_set_output(&pwm->output_b);
 }
 
 static int8_t rfs_pwm8_set_clock_divisor_and_mode(struct rfs_pwm8_t *pwm, uint32_t target_frequency, uint32_t cpu_clock_frequency)
@@ -122,16 +118,7 @@ void rfs_pwm8_set_frequency_exact(struct rfs_pwm8_t *pwm, uint32_t frequency, ui
     rfs_timer8_set_ocra(&pwm->timer, ocra);
 }
 
-/*void rfs_pwm_set_duty_cycle_8(struct rfs_pwm_t *pwm, uint8_t duty_cycle)
-{
-
-}
-
-void rfs_pwm_set_duty_cycle_16(struct rfs_pwm_t *pwm, uint16_t duty_cycle)
-{
-
-}
-
+/*
 void rfs_pwm_close(struct rfs_pwm_t *pwm)
 {
 

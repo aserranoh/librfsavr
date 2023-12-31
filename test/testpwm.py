@@ -25,7 +25,7 @@ PWM_MODE_PHASE_CORRECT = 1
 def check_test_init(data: list[str]) -> bool:
     addresses = [int(x, base=16) for x in data]
     print(addresses)
-    for index in range(6):
+    for index in range(1):
         if addresses[2 * index] != addresses[2 * index + 1]:
             return False
     return True

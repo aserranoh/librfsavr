@@ -37,12 +37,15 @@ along with RobotsFromScratch; see the file COPYING.  If not, see
  */
 struct rfs_timer8_t {
     volatile uint8_t *cra;
-    volatile uint8_t *crb;
-    volatile uint8_t *cnt;
-    volatile uint8_t *ocra;
-    volatile uint8_t *ocrb;
-    volatile uint8_t *ifr;
 };
+
+/**
+ * @brief Macros to obtain the addresses of the timer related registers from the TCCRXA register
+ */
+#define rfs_timer8_crb(pwm)    ((pwm)->cra + 1)
+#define rfs_timer8_cnt(pwm)    ((pwm)->cra + 2)
+#define rfs_timer8_ocra(pwm)   ((pwm)->cra + 3)
+#define rfs_timer8_ocrb(pwm)   ((pwm)->cra + 4)
 
 /**
  * @brief Struct that contains all the address to all the registers necessary to control the timer
@@ -163,12 +166,12 @@ void rfs_timer8_init(struct rfs_timer8_t *timer, enum rfs_timer8_enum which);
 
 inline enum rfs_timer8_mode rfs_timer8_get_mode(struct rfs_timer8_t *timer)
 {
-    return (*timer->cra & RFS_TIMER8_CRA_MODE_MASK) | (*timer->crb & RFS_TIMER8_CRB_MODE_MASK);
+    return (*timer->cra & RFS_TIMER8_CRA_MODE_MASK) | (*rfs_timer8_crb(timer) & RFS_TIMER8_CRB_MODE_MASK);
 }
 
 inline void rfs_timer8_set_clock(struct rfs_timer8_t *timer, enum rfs_timer8_clock clock)
 {
-    *timer->crb = (*timer->crb & ~RFS_TIMER8_CLOCK_MASK) | clock;
+    *rfs_timer8_crb(timer) = (*rfs_timer8_crb(timer) & ~RFS_TIMER8_CLOCK_MASK) | clock;
 }
 
 /**
@@ -177,7 +180,7 @@ inline void rfs_timer8_set_clock(struct rfs_timer8_t *timer, enum rfs_timer8_clo
  * @param timer The structure that contains the timer information
  * @param mode The channel A pin mode on compare match
  */
-inline void rfs_timer8_set_compare_match_output_mode_A(struct rfs_timer8_t *timer, enum rfs_timer_comA mode)
+inline void rfs_timer8_set_compare_match_output_mode_a(struct rfs_timer8_t *timer, enum rfs_timer_comA mode)
 {
     *timer->cra = ((*timer->cra & ~RFS_TIMER8_COMA_MASK) | mode);
 }
@@ -188,7 +191,7 @@ inline void rfs_timer8_set_compare_match_output_mode_A(struct rfs_timer8_t *time
  * @param timer The structure that contains the timer information
  * @param mode The channel B pin mode on compare match
  */
-inline void rfs_timer8_set_compare_match_output_mode_B(struct rfs_timer8_t *timer, enum rfs_timer_comB mode)
+inline void rfs_timer8_set_compare_match_output_mode_b(struct rfs_timer8_t *timer, enum rfs_timer_comB mode)
 {
     *timer->cra = ((*timer->cra & ~RFS_TIMER8_COMB_MASK) | mode);
 }
@@ -209,7 +212,7 @@ void rfs_timer8_set_mode(struct rfs_timer8_t *timer, enum rfs_timer8_mode mode);
  */
 inline void rfs_timer8_set_ocra(struct rfs_timer8_t *timer, uint8_t ocra)
 {
-    *timer->ocra = ocra;
+    *rfs_timer8_ocra(timer) = ocra;
 }
 
 /**
@@ -220,7 +223,7 @@ inline void rfs_timer8_set_ocra(struct rfs_timer8_t *timer, uint8_t ocra)
  */
 inline void rfs_timer8_set_ocrb(struct rfs_timer8_t *timer, uint8_t ocrb)
 {
-    *timer->ocrb = ocrb;
+    *rfs_timer8_ocrb(timer) = ocrb;
 }
 
 /**

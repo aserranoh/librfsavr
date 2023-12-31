@@ -1,5 +1,5 @@
 /*
-testleds.c - Test program for the LED subsystem.
+io.h - Use IO ports of the AVR microcontroller.
 
 This file is part of RobotsFromScratch.
 
@@ -20,24 +20,22 @@ along with RobotsFromScratch; see the file COPYING.  If not, see
 <http://www.gnu.org/licenses/>.
 */
 
-#include "rfsavr/leds.h"
+#include "rfsavr/io.h"
 
-#include <avr/io.h>
-
-#define LEDS_COUNT  12
-#define LEDS_PORT   PORTB
-#define LEDS_PIN    3
-
-int main()
+void rfs_pin_init(struct rfs_pin_t *pin, volatile uint8_t *port, int8_t pin_number)
 {
-    struct rfs_grb_t led_values[LEDS_COUNT];
-    struct rfs_pin_t leds_pin = {.port = &LEDS_PORT, .pin = LEDS_PIN};
-    rfs_pin_set_output(&leds_pin);
+    pin->port = port;
+    pin->pin = pin_number;
+}
 
-    for (uint8_t i = 0; i < LEDS_COUNT; i++) {
-        led_values[i].green = 0;
-        led_values[i].red = 0;
-        led_values[i].blue = 255;
-    }
-    rfs_leds_write(led_values, LEDS_COUNT, &leds_pin);
+void rfs_pin_set_input(struct rfs_pin_t *pin)
+{
+    rfs_pin_zero(rfs_ddr(pin), pin->pin);
+    rfs_pin_zero(pin->port, pin->pin);
+}
+
+void rfs_pin_set_input_pullup(struct rfs_pin_t *pin)
+{
+    rfs_pin_zero(rfs_ddr(pin), pin->pin);
+    rfs_pin_one(pin->port, pin->pin);
 }

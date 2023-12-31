@@ -54,33 +54,34 @@ struct rfs_pin_t {
 #define rfs_pin_one(port, pin)  *(port) |= _BV(pin)
 
 /**
+ * @brief Initialize the pin structure
+ * 
+ * @param pin The pin structure
+ * @param port The port where the pin is located
+ * @param pin_number The pin number
+ */
+void rfs_pin_init(struct rfs_pin_t *pin, volatile uint8_t *port, int8_t pin_number);
+
+/**
  * @brief Configure the given pin as input
  * 
  * @param pin The pin to configure as input
  */
-static inline void rfs_pin_setinput(struct rfs_pin_t *pin)
-{
-    rfs_pin_zero(rfs_ddr(pin), pin->pin);
-    rfs_pin_zero(pin->port, pin->pin);
-}
+void rfs_pin_set_input(struct rfs_pin_t *pin);
 
 /**
  * @brief Configure the given pin as input and enable the pull-up resistor
  * 
  * @param pin The pin to configure as input
  */
-static inline void rfs_pin_setinput_pullup(struct rfs_pin_t *pin)
-{
-    rfs_pin_zero(rfs_ddr(pin), pin->pin);
-    rfs_pin_one(pin->port, pin->pin);
-}
+void rfs_pin_set_input_pullup(struct rfs_pin_t *pin);
 
 /**
  * @brief Configure the given pin as output
  * 
  * @param pin The pin to configure as output
  */
-static inline void rfs_pin_setoutput(struct rfs_pin_t *pin)
+inline void rfs_pin_set_output(struct rfs_pin_t *pin)
 {
     rfs_pin_one(rfs_ddr(pin), pin->pin);
 }
@@ -92,7 +93,7 @@ static inline void rfs_pin_setoutput(struct rfs_pin_t *pin)
  * 
  * @return Zero if the pin is not active, or a value different than zero otherwise
  */
-static inline uint8_t rfs_pin_read(struct rfs_pin_t *pin)
+inline uint8_t rfs_pin_read(struct rfs_pin_t *pin)
 {
     return *rfs_pin(pin) & _BV(pin->pin);
 }
@@ -102,7 +103,7 @@ static inline uint8_t rfs_pin_read(struct rfs_pin_t *pin)
  * 
  * @param pin The pin to set
  */
-static inline void rfs_pin_set(struct rfs_pin_t *pin)
+inline void rfs_pin_set(struct rfs_pin_t *pin)
 {
     rfs_pin_one(pin->port, pin->pin);
 }
@@ -112,7 +113,7 @@ static inline void rfs_pin_set(struct rfs_pin_t *pin)
  * 
  * @param pin The pin to reset
  */
-static inline void rfs_pin_reset(struct rfs_pin_t *pin)
+inline void rfs_pin_reset(struct rfs_pin_t *pin)
 {
     rfs_pin_zero(pin->port, pin->pin);
 }
@@ -122,7 +123,7 @@ static inline void rfs_pin_reset(struct rfs_pin_t *pin)
  * 
  * @param pin The pin to read at the PORT register
  */
-static inline uint8_t rfs_pin_readport(struct rfs_pin_t *pin)
+inline uint8_t rfs_pin_readport(struct rfs_pin_t *pin)
 {
     return *pin->port & _BV(pin->pin);
 }
@@ -132,7 +133,7 @@ static inline uint8_t rfs_pin_readport(struct rfs_pin_t *pin)
  * 
  * @param pin The pin to toggle at the PORT register
  */
-static inline void rfs_pin_toggle(struct rfs_pin_t *pin)
+inline void rfs_pin_toggle(struct rfs_pin_t *pin)
 {
     rfs_pin_one(rfs_ddr(pin), pin->pin);
 }

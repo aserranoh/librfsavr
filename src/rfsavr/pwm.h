@@ -23,6 +23,7 @@ along with RobotsFromScratch; see the file COPYING.  If not, see
 #ifndef RFS_PWM_H
 #define RFS_PWM_H
 
+#include "rfsavr/io.h"
 #include "rfsavr/timers.h"
 
 /**
@@ -30,6 +31,8 @@ along with RobotsFromScratch; see the file COPYING.  If not, see
  */
 struct rfs_pwm8_t {
     struct rfs_timer8_t timer;
+    struct rfs_pin_t output_a;
+    struct rfs_pin_t output_b;
     uint16_t *divisor_table;
     int8_t divisor_table_size;
 };
@@ -47,9 +50,9 @@ void rfs_pwm8_init(struct rfs_pwm8_t *pwm, enum rfs_timer8_enum timer);
  * 
  * @param pwm The structure that contains the PWM information
  */
-inline void rfs_pwm8_disable_channel_A(struct rfs_pwm8_t *pwm)
+inline void rfs_pwm8_disable_channel_a(struct rfs_pwm8_t *pwm)
 {
-    rfs_timer8_set_compare_match_output_mode_A(&pwm->timer, RFS_TIMER_COMA_NORMAL);
+    rfs_timer8_set_compare_match_output_mode_a(&pwm->timer, RFS_TIMER_COMA_NORMAL);
 }
 
 /**
@@ -57,9 +60,9 @@ inline void rfs_pwm8_disable_channel_A(struct rfs_pwm8_t *pwm)
  * 
  * @param pwm The structure that contains the PWM information
  */
-inline void rfs_pwm8_disable_channel_B(struct rfs_pwm8_t *pwm)
+inline void rfs_pwm8_disable_channel_b(struct rfs_pwm8_t *pwm)
 {
-    rfs_timer8_set_compare_match_output_mode_B(&pwm->timer, RFS_TIMER_COMB_NORMAL);
+    rfs_timer8_set_compare_match_output_mode_b(&pwm->timer, RFS_TIMER_COMB_NORMAL);
 }
 
 /**
@@ -67,14 +70,14 @@ inline void rfs_pwm8_disable_channel_B(struct rfs_pwm8_t *pwm)
  * 
  * @param pwm The structure that contains the PWM information
  */
-void rfs_pwm8_enable_channel_A(struct rfs_pwm8_t *pwm);
+void rfs_pwm8_enable_channel_a(struct rfs_pwm8_t *pwm);
 
 /**
  * @brief Enable PWM output on channel B
  * 
  * @param pwm The structure that contains the PWM information
  */
-void rfs_pwm8_enable_channel_B(struct rfs_pwm8_t *pwm);
+void rfs_pwm8_enable_channel_b(struct rfs_pwm8_t *pwm);
 
 /**
  * @brief Set the PWM signal frequency
