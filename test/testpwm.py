@@ -9,7 +9,7 @@ from typing import Callable
 PWM_PROGRAM = "testpwm.hex"
 COMM_BAUDS = 19200
 SLEEP_TIME = 2
-ALL_TESTS_SIZE = 53
+ALL_TESTS_SIZE = 108
 COMA_MASK = 0b11000000
 COMB_MASK = 0b00110000
 DDRD6_MASK = 0b01000000
@@ -74,6 +74,13 @@ def check_test_set_frequency_exact(clock: int, mode: int, ocra: int) -> Callable
         return (values[0] & CRA_MODE_MASK == mode) and (values[1] & CRB_MODE_MASK == 0b00001000) and (values[1] & CLOCK_MASK == clock) and values[2] == ocra
     return check_frequency
 
+def check_test_set_duty_cycle(ocra: int) -> Callable[[list[str]], bool]:
+    def check_duty_cycle(data: list[str]):
+        values = [int(x, base=16) for x in data]
+        print(values)
+        return values[0] == ocra
+    return check_duty_cycle
+
 TESTS_CHECKS = {
     1: check_test_init,
     2: check_test_init,
@@ -127,7 +134,62 @@ TESTS_CHECKS = {
     50: check_test_set_frequency(7, PWM_MODE_FAST),
     51: check_test_set_frequency(7, PWM_MODE_FAST),
     52: check_test_set_frequency(7, PWM_MODE_PHASE_CORRECT),
-    53: check_test_set_frequency_exact(1, PWM_MODE_PHASE_CORRECT, 160),
+    53: check_test_set_frequency_exact(1, PWM_MODE_FAST, 228),
+    54: check_test_set_frequency_exact(1, PWM_MODE_FAST, 255),
+    55: check_test_set_frequency_exact(1, PWM_MODE_PHASE_CORRECT, 128),
+    56: check_test_set_frequency_exact(1, PWM_MODE_PHASE_CORRECT, 255),
+    57: check_test_set_frequency_exact(2, PWM_MODE_FAST, 64),
+    58: check_test_set_frequency_exact(2, PWM_MODE_FAST, 255),
+    59: check_test_set_frequency_exact(2, PWM_MODE_PHASE_CORRECT, 128),
+    60: check_test_set_frequency_exact(2, PWM_MODE_PHASE_CORRECT, 255),
+    61: check_test_set_frequency_exact(3, PWM_MODE_FAST, 64),
+    62: check_test_set_frequency_exact(3, PWM_MODE_FAST, 255),
+    63: check_test_set_frequency_exact(3, PWM_MODE_PHASE_CORRECT, 128),
+    64: check_test_set_frequency_exact(3, PWM_MODE_PHASE_CORRECT, 255),
+    65: check_test_set_frequency_exact(4, PWM_MODE_FAST, 128),
+    66: check_test_set_frequency_exact(4, PWM_MODE_FAST, 255),
+    67: check_test_set_frequency_exact(4, PWM_MODE_PHASE_CORRECT, 128),
+    68: check_test_set_frequency_exact(4, PWM_MODE_PHASE_CORRECT, 254),
+    69: check_test_set_frequency_exact(5, PWM_MODE_FAST, 128),
+    70: check_test_set_frequency_exact(5, PWM_MODE_FAST, 252),
+    71: check_test_set_frequency_exact(5, PWM_MODE_PHASE_CORRECT, 128),
+    72: check_test_set_frequency_exact(5, PWM_MODE_PHASE_CORRECT, 252),
+    73: check_test_set_frequency_exact(5, PWM_MODE_PHASE_CORRECT, 255),
+    74: check_test_set_frequency_exact(1, PWM_MODE_FAST, 228),
+    75: check_test_set_frequency_exact(1, PWM_MODE_FAST, 255),
+    76: check_test_set_frequency_exact(1, PWM_MODE_PHASE_CORRECT, 128),
+    77: check_test_set_frequency_exact(1, PWM_MODE_PHASE_CORRECT, 255),
+    78: check_test_set_frequency_exact(2, PWM_MODE_FAST, 64),
+    79: check_test_set_frequency_exact(2, PWM_MODE_FAST, 255),
+    80: check_test_set_frequency_exact(2, PWM_MODE_PHASE_CORRECT, 128),
+    81: check_test_set_frequency_exact(2, PWM_MODE_PHASE_CORRECT, 255),
+    82: check_test_set_frequency_exact(3, PWM_MODE_FAST, 128),
+    83: check_test_set_frequency_exact(3, PWM_MODE_FAST, 255),
+    84: check_test_set_frequency_exact(3, PWM_MODE_PHASE_CORRECT, 128),
+    85: check_test_set_frequency_exact(3, PWM_MODE_PHASE_CORRECT, 255),
+    86: check_test_set_frequency_exact(4, PWM_MODE_PHASE_CORRECT, 128),
+    87: check_test_set_frequency_exact(4, PWM_MODE_PHASE_CORRECT, 255),
+    88: check_test_set_frequency_exact(5, PWM_MODE_PHASE_CORRECT, 128),
+    89: check_test_set_frequency_exact(5, PWM_MODE_PHASE_CORRECT, 255),
+    90: check_test_set_frequency_exact(6, PWM_MODE_PHASE_CORRECT, 128),
+    91: check_test_set_frequency_exact(6, PWM_MODE_PHASE_CORRECT, 254),
+    92: check_test_set_frequency_exact(7, PWM_MODE_FAST, 128),
+    93: check_test_set_frequency_exact(7, PWM_MODE_FAST, 252),
+    94: check_test_set_frequency_exact(7, PWM_MODE_PHASE_CORRECT, 128),
+    95: check_test_set_frequency_exact(7, PWM_MODE_PHASE_CORRECT, 252),
+    96: check_test_set_frequency_exact(7, PWM_MODE_PHASE_CORRECT, 255),
+    97: check_test_set_duty_cycle(0),
+    98: check_test_set_duty_cycle(128),
+    99: check_test_set_duty_cycle(255),
+    100: check_test_set_duty_cycle(0),
+    101: check_test_set_duty_cycle(128),
+    102: check_test_set_duty_cycle(255),
+    103: check_test_set_duty_cycle(0),
+    104: check_test_set_duty_cycle(128),
+    105: check_test_set_duty_cycle(255),
+    106: check_test_set_duty_cycle(0),
+    107: check_test_set_duty_cycle(128),
+    108: check_test_set_duty_cycle(255),
 }
 
 def check_message_result(message: str) -> tuple[int, bool]:

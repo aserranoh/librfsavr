@@ -116,8 +116,33 @@ void rfs_pwm8_set_frequency(struct rfs_pwm8_t *pwm, uint32_t frequency, uint32_t
  */
 void rfs_pwm8_set_frequency_exact(struct rfs_pwm8_t *pwm, uint32_t frequency, uint32_t cpu_frequency);
 
-/*void rfs_pwm_set_duty_cycle_8(struct rfs_pwm_t *pwm, uint8_t duty_cycle);
-void rfs_pwm_set_duty_cycle_16(struct rfs_pwm_t *pwm, uint16_t duty_cycle);
+/**
+ * @brief Set the duty cycle for channel A of the given PWM module
+ * 
+ * Note that this method shouldn't be used if we are using an exact frequency, because the exact
+ * frequency requires the top value to be in the OCRXA register. Thus, when an exact frequency
+ * is used, only channel B is available.
+ * 
+ * @param pwm The structure that contains the PWM information
+ * @param duty_cycle The new duty cycle
+ */
+inline void rfs_pwm8_set_duty_cycle_channel_a(struct rfs_pwm8_t *pwm, uint8_t duty_cycle)
+{
+    rfs_timer8_set_ocra(&pwm->timer, duty_cycle);
+}
+
+/**
+ * @brief Set the duty cycle for channel B of the given PWM module
+ * 
+ * @param pwm The structure that contains the PWM information
+ * @param duty_cycle The new duty cycle
+ */
+inline void rfs_pwm8_set_duty_cycle_channel_b(struct rfs_pwm8_t *pwm, uint8_t duty_cycle)
+{
+    rfs_timer8_set_ocrb(&pwm->timer, duty_cycle);
+}
+
+/*void rfs_pwm_set_duty_cycle_16(struct rfs_pwm_t *pwm, uint16_t duty_cycle);
 void rfs_pwm_close(struct rfs_pwm_t *pwm);*/
 
 #endif

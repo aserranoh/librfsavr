@@ -201,9 +201,26 @@ inline void rfs_timer8_set_compare_match_output_mode_B(struct rfs_timer8_t *time
  */
 void rfs_timer8_set_mode(struct rfs_timer8_t *timer, enum rfs_timer8_mode mode);
 
+/**
+ * @brief Set the Output Compare value for channel A (OCRA)
+ * 
+ * @param timer The structure that contains the timer information
+ * @param mode The new OCRA value
+ */
 inline void rfs_timer8_set_ocra(struct rfs_timer8_t *timer, uint8_t ocra)
 {
     *timer->ocra = ocra;
+}
+
+/**
+ * @brief Set the Output Compare value for channel B (OCRB)
+ * 
+ * @param timer The structure that contains the timer information
+ * @param mode The new OCRB value
+ */
+inline void rfs_timer8_set_ocrb(struct rfs_timer8_t *timer, uint8_t ocrb)
+{
+    *timer->ocrb = ocrb;
 }
 
 /**
@@ -296,7 +313,7 @@ inline void rfs_timer16_setocra(struct rfs_timer_t *timer, uint16_t value)
  */
 inline void rfs_timer16_setocrb(struct rfs_timer_t *timer, uint16_t value)
 {
-    *timer->ocra = value;
+    *timer->ocrb = value;
 }
 
 #endif

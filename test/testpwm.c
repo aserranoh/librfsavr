@@ -163,6 +163,51 @@ void test_set_frequency_exact_timer0(uint8_t test_id, uint32_t frequency)
     write_result(buffer, size);
 }
 
+void test_set_frequency_exact_timer2(uint8_t test_id, uint32_t frequency)
+{
+    struct rfs_pwm8_t pwm;
+    rfs_pwm8_init(&pwm, RFS_TIMER2);
+    rfs_pwm8_set_frequency_exact(&pwm, frequency, F_CPU);
+    uint8_t size = sprintf(buffer, "%hhu:%hhx,%hhx,%hhx\n", test_id, TCCR2A, TCCR2B, OCR2A);
+    write_result(buffer, size);
+}
+
+void test_set_duty_cycle_channel_a_timer0(uint8_t test_id, uint8_t duty_cycle)
+{
+    struct rfs_pwm8_t pwm;
+    rfs_pwm8_init(&pwm, RFS_TIMER0);
+    rfs_pwm8_set_duty_cycle_channel_a(&pwm, duty_cycle);
+    uint8_t size = sprintf(buffer, "%hhu:%hhx\n", test_id, OCR0A);
+    write_result(buffer, size);
+}
+
+void test_set_duty_cycle_channel_b_timer0(uint8_t test_id, uint8_t duty_cycle)
+{
+    struct rfs_pwm8_t pwm;
+    rfs_pwm8_init(&pwm, RFS_TIMER0);
+    rfs_pwm8_set_duty_cycle_channel_b(&pwm, duty_cycle);
+    uint8_t size = sprintf(buffer, "%hhu:%hhx\n", test_id, OCR0B);
+    write_result(buffer, size);
+}
+
+void test_set_duty_cycle_channel_a_timer2(uint8_t test_id, uint8_t duty_cycle)
+{
+    struct rfs_pwm8_t pwm;
+    rfs_pwm8_init(&pwm, RFS_TIMER2);
+    rfs_pwm8_set_duty_cycle_channel_a(&pwm, duty_cycle);
+    uint8_t size = sprintf(buffer, "%hhu:%hhx\n", test_id, OCR2A);
+    write_result(buffer, size);
+}
+
+void test_set_duty_cycle_channel_b_timer2(uint8_t test_id, uint8_t duty_cycle)
+{
+    struct rfs_pwm8_t pwm;
+    rfs_pwm8_init(&pwm, RFS_TIMER2);
+    rfs_pwm8_set_duty_cycle_channel_b(&pwm, duty_cycle);
+    uint8_t size = sprintf(buffer, "%hhu:%hhx\n", test_id, OCR2B);
+    write_result(buffer, size);
+}
+
 int main()
 {
     init_usart();
@@ -219,7 +264,62 @@ int main()
     test_set_frequency_timer2(50, 61);
     test_set_frequency_timer2(51, 31);
     test_set_frequency_timer2(52, 30);
-    test_set_frequency_exact_timer0(53, 50000);
+    test_set_frequency_exact_timer0(53, 70000);
+    test_set_frequency_exact_timer0(54, 62501);
+    test_set_frequency_exact_timer0(55, 62500);
+    test_set_frequency_exact_timer0(56, 31251);
+    test_set_frequency_exact_timer0(57, 31250);
+    test_set_frequency_exact_timer0(58, 7813);
+    test_set_frequency_exact_timer0(59, 7812);
+    test_set_frequency_exact_timer0(60, 3907);
+    test_set_frequency_exact_timer0(61, 3906);
+    test_set_frequency_exact_timer0(62, 977);
+    test_set_frequency_exact_timer0(63, 976);
+    test_set_frequency_exact_timer0(64, 489);
+    test_set_frequency_exact_timer0(65, 488);
+    test_set_frequency_exact_timer0(66, 245);
+    test_set_frequency_exact_timer0(67, 244);
+    test_set_frequency_exact_timer0(68, 123);
+    test_set_frequency_exact_timer0(69, 122);
+    test_set_frequency_exact_timer0(70, 62);
+    test_set_frequency_exact_timer0(71, 61);
+    test_set_frequency_exact_timer0(72, 31);
+    test_set_frequency_exact_timer0(73, 30);
+    test_set_frequency_exact_timer2(74, 70000);
+    test_set_frequency_exact_timer2(75, 62501);
+    test_set_frequency_exact_timer2(76, 62500);
+    test_set_frequency_exact_timer2(77, 31251);
+    test_set_frequency_exact_timer2(78, 31250);
+    test_set_frequency_exact_timer2(79, 7813);
+    test_set_frequency_exact_timer2(80, 7812);
+    test_set_frequency_exact_timer2(81, 3907);
+    test_set_frequency_exact_timer2(82, 3906);
+    test_set_frequency_exact_timer2(83, 1954);
+    test_set_frequency_exact_timer2(84, 1953);
+    test_set_frequency_exact_timer2(85, 977);
+    test_set_frequency_exact_timer2(86, 976);
+    test_set_frequency_exact_timer2(87, 489);
+    test_set_frequency_exact_timer2(88, 488);
+    test_set_frequency_exact_timer2(89, 245);
+    test_set_frequency_exact_timer2(90, 244);
+    test_set_frequency_exact_timer2(91, 123);
+    test_set_frequency_exact_timer2(92, 122);
+    test_set_frequency_exact_timer2(93, 62);
+    test_set_frequency_exact_timer2(94, 61);
+    test_set_frequency_exact_timer2(95, 31);
+    test_set_frequency_exact_timer2(96, 30);
+    test_set_duty_cycle_channel_a_timer0(97, 0);
+    test_set_duty_cycle_channel_a_timer0(98, 128);
+    test_set_duty_cycle_channel_a_timer0(99, 255);
+    test_set_duty_cycle_channel_b_timer0(100, 0);
+    test_set_duty_cycle_channel_b_timer0(101, 128);
+    test_set_duty_cycle_channel_b_timer0(102, 255);
+    test_set_duty_cycle_channel_a_timer2(103, 0);
+    test_set_duty_cycle_channel_a_timer2(104, 128);
+    test_set_duty_cycle_channel_a_timer2(105, 255);
+    test_set_duty_cycle_channel_b_timer2(106, 0);
+    test_set_duty_cycle_channel_b_timer2(107, 128);
+    test_set_duty_cycle_channel_b_timer2(108, 255);
 
     // Loop forever
     while (1);

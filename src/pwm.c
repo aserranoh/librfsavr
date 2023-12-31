@@ -111,6 +111,11 @@ void rfs_pwm8_set_frequency_exact(struct rfs_pwm8_t *pwm, uint32_t frequency, ui
         mode = RFS_TIMER8_MODE_FAST_PWM_OCRA;
         ocra = cpu_frequency / (frequency * pwm->divisor_table[divisor_index + 1]);
         rfs_timer8_set_clock(&pwm->timer, divisor_index + 2);
+
+    // In the last case, we are under the minimum frequency
+    } else {
+        mode = RFS_TIMER8_MODE_PWM_PHASE_CORRECT_OCRA;
+        ocra = 255;
     }
 
     rfs_timer8_set_mode(&pwm->timer, mode);
