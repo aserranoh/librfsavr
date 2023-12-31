@@ -206,6 +206,24 @@ void test_set_duty_cycle_channel_b_timer2(uint8_t test_id, uint8_t duty_cycle)
     write_result(buffer, size);
 }
 
+void test_close_timer0()
+{
+    struct rfs_pwm8_t pwm;
+    rfs_pwm8_init(&pwm, RFS_TIMER0);
+    rfs_pwm8_close(&pwm);
+    uint8_t size = sprintf(buffer, "109:%hhu,%hhu\n", TCCR0A, TCCR0B);
+    write_result(buffer, size);
+}
+
+void test_close_timer2()
+{
+    struct rfs_pwm8_t pwm;
+    rfs_pwm8_init(&pwm, RFS_TIMER2);
+    rfs_pwm8_close(&pwm);
+    uint8_t size = sprintf(buffer, "110:%hhu,%hhu\n", TCCR2A, TCCR2B);
+    write_result(buffer, size);
+}
+
 int main()
 {
     init_usart();
@@ -318,6 +336,8 @@ int main()
     test_set_duty_cycle_channel_b_timer2(106, 0);
     test_set_duty_cycle_channel_b_timer2(107, 128);
     test_set_duty_cycle_channel_b_timer2(108, 255);
+    test_close_timer0();
+    test_close_timer2();
 
     // Loop forever
     while (1);

@@ -9,7 +9,7 @@ from typing import Callable
 PWM_PROGRAM = "testpwm.hex"
 COMM_BAUDS = 19200
 SLEEP_TIME = 2
-ALL_TESTS_SIZE = 108
+ALL_TESTS_SIZE = 110
 COMA_MASK = 0b11000000
 COMB_MASK = 0b00110000
 DDRD6_MASK = 0b01000000
@@ -80,6 +80,11 @@ def check_test_set_duty_cycle(ocra: int) -> Callable[[list[str]], bool]:
         print(values)
         return values[0] == ocra
     return check_duty_cycle
+
+def check_test_close(data: list[str]) -> bool:
+    values = [int(x, base=16) for x in data]
+    print(values)
+    return (values[0] & CRA_MODE_MASK == 0 and values[1] & CRB_MODE_MASK == 0 and values[1] & CLOCK_MASK == 0)
 
 TESTS_CHECKS = {
     1: check_test_init,
@@ -190,6 +195,8 @@ TESTS_CHECKS = {
     106: check_test_set_duty_cycle(0),
     107: check_test_set_duty_cycle(128),
     108: check_test_set_duty_cycle(255),
+    109: check_test_close,
+    110: check_test_close
 }
 
 def check_message_result(message: str) -> tuple[int, bool]:

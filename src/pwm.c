@@ -46,6 +46,12 @@ void rfs_pwm8_init(struct rfs_pwm8_t *pwm, enum rfs_timer8_enum timer)
     }
 }
 
+void rfs_pwm8_close(struct rfs_pwm8_t *pwm)
+{
+    rfs_timer8_set_mode(&pwm->timer, RFS_TIMER8_MODE_NORMAL);
+    rfs_timer8_set_clock(&pwm->timer, RFS_TIMER0_CLOCK_NONE);
+}
+
 void rfs_pwm8_enable_channel_a(struct rfs_pwm8_t *pwm)
 {
     rfs_timer8_set_compare_match_output_mode_a(&pwm->timer, RFS_TIMER_COMA_NONINVERT);

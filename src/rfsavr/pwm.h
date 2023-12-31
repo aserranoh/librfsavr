@@ -46,6 +46,13 @@ struct rfs_pwm8_t {
 void rfs_pwm8_init(struct rfs_pwm8_t *pwm, enum rfs_timer8_enum timer);
 
 /**
+ * @brief Shutdown the 8-bit PWM
+ * 
+ * @param pwm The structure that contains the PWM information
+ */
+void rfs_pwm8_close(struct rfs_pwm8_t *pwm);
+
+/**
  * @brief Disable PWM output on channel A
  * 
  * @param pwm The structure that contains the PWM information
