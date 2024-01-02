@@ -171,4 +171,38 @@ inline void rfs_pwm8_set_duty_cycle_channel_b(struct rfs_pwm8_t *pwm, uint8_t du
  */
 void rfs_pwm16_init(struct rfs_pwm16_t *pwm, enum rfs_timer16_enum timer);
 
+/**
+ * @brief Disable PWM output on channel A
+ * 
+ * @param pwm The structure that contains the PWM information
+ */
+inline void rfs_pwm16_disable_channel_a(struct rfs_pwm16_t *pwm)
+{
+    rfs_timer16_set_compare_match_output_mode_a(&pwm->timer, RFS_TIMER_COMA_NORMAL);
+}
+
+/**
+ * @brief Disable PWM output on channel B
+ * 
+ * @param pwm The structure that contains the PWM information
+ */
+inline void rfs_pwm16_disable_channel_b(struct rfs_pwm16_t *pwm)
+{
+    rfs_timer16_set_compare_match_output_mode_b(&pwm->timer, RFS_TIMER_COMB_NORMAL);
+}
+
+/**
+ * @brief Enable PWM output on channel A
+ * 
+ * @param pwm The structure that contains the PWM information
+ */
+void rfs_pwm16_enable_channel_a(struct rfs_pwm16_t *pwm);
+
+/**
+ * @brief Enable PWM output on channel B
+ * 
+ * @param pwm The structure that contains the PWM information
+ */
+void rfs_pwm16_enable_channel_b(struct rfs_pwm16_t *pwm);
+
 #endif

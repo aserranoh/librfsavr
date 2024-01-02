@@ -127,4 +127,18 @@ void rfs_pwm8_set_frequency_exact(struct rfs_pwm8_t *pwm, uint32_t frequency, ui
 void rfs_pwm16_init(struct rfs_pwm16_t *pwm, enum rfs_timer16_enum timer)
 {
     rfs_timer16_init(&(pwm->timer), timer);
+    rfs_pin_init(&pwm->output_a, &PORTB, 1);
+    rfs_pin_init(&pwm->output_b, &PORTB, 2);
+}
+
+void rfs_pwm16_enable_channel_a(struct rfs_pwm16_t *pwm)
+{
+    rfs_timer16_set_compare_match_output_mode_a(&pwm->timer, RFS_TIMER_COMA_NONINVERT);
+    rfs_pin_set_output(&pwm->output_a);
+}
+
+void rfs_pwm16_enable_channel_b(struct rfs_pwm16_t *pwm)
+{
+    rfs_timer16_set_compare_match_output_mode_b(&pwm->timer, RFS_TIMER_COMB_NONINVERT);
+    rfs_pin_set_output(&pwm->output_b);
 }

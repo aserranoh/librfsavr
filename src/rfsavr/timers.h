@@ -26,15 +26,14 @@ along with RobotsFromScratch; see the file COPYING.  If not, see
 #include <stdint.h>
 #include <avr/io.h>
 
-#define RFS_TIMER8_COMA_MASK        0b11000000
-#define RFS_TIMER8_COMB_MASK        0b00110000
-#define RFS_TIMER8_CLOCK_MASK       0b00000111
+#define RFS_TIMER_COMA_MASK         0b11000000
+#define RFS_TIMER_COMB_MASK         0b00110000
+#define RFS_TIMER_CLOCK_MASK        0b00000111
 #define RFS_TIMER8_CRA_MODE_MASK    0b00000011
 #define RFS_TIMER8_CRB_MODE_MASK    0b00001000
 
 #define RFS_TIMER16_CRA_MODE_MASK   0b00000011
 #define RFS_TIMER16_CRB_MODE_MASK   0b00011000
-#define RFS_TIMER16_CLOCK_MASK      0b00000111
 
 /**
  * @brief Struct that contains all the address to all the registers necessary to control the 8-bit timer
@@ -152,7 +151,7 @@ enum rfs_timer16_mode {
 /**
  * @brief Enumeration with the possible output modes on compare match for channel A
  */
-enum rfs_timer_comA {
+enum rfs_timer_com_a {
     RFS_TIMER_COMA_NORMAL    = 0b00000000,
     RFS_TIMER_COMA_TOGGLE    = 0b01000000,
     RFS_TIMER_COMA_CLEAR     = 0b10000000,
@@ -164,7 +163,7 @@ enum rfs_timer_comA {
 /**
  * @brief Enumeration with the possible output modes on compare match for channel B
  */
-enum rfs_timer_comB {
+enum rfs_timer_com_b {
     RFS_TIMER_COMB_NORMAL    = 0b00000000,
     RFS_TIMER_COMB_TOGGLE    = 0b00010000,
     RFS_TIMER_COMB_CLEAR     = 0b00100000,
@@ -188,7 +187,7 @@ inline enum rfs_timer8_mode rfs_timer8_get_mode(struct rfs_timer8_t *timer)
 
 inline void rfs_timer8_set_clock(struct rfs_timer8_t *timer, enum rfs_timer8_clock clock)
 {
-    *rfs_timer8_crb(timer) = (*rfs_timer8_crb(timer) & ~RFS_TIMER8_CLOCK_MASK) | clock;
+    *rfs_timer8_crb(timer) = (*rfs_timer8_crb(timer) & ~RFS_TIMER_CLOCK_MASK) | clock;
 }
 
 /**
@@ -197,9 +196,9 @@ inline void rfs_timer8_set_clock(struct rfs_timer8_t *timer, enum rfs_timer8_clo
  * @param timer The structure that contains the timer information
  * @param mode The channel A pin mode on compare match
  */
-inline void rfs_timer8_set_compare_match_output_mode_a(struct rfs_timer8_t *timer, enum rfs_timer_comA mode)
+inline void rfs_timer8_set_compare_match_output_mode_a(struct rfs_timer8_t *timer, enum rfs_timer_com_a mode)
 {
-    *timer->cra = ((*timer->cra & ~RFS_TIMER8_COMA_MASK) | mode);
+    *timer->cra = ((*timer->cra & ~RFS_TIMER_COMA_MASK) | mode);
 }
 
 /**
@@ -208,9 +207,9 @@ inline void rfs_timer8_set_compare_match_output_mode_a(struct rfs_timer8_t *time
  * @param timer The structure that contains the timer information
  * @param mode The channel B pin mode on compare match
  */
-inline void rfs_timer8_set_compare_match_output_mode_b(struct rfs_timer8_t *timer, enum rfs_timer_comB mode)
+inline void rfs_timer8_set_compare_match_output_mode_b(struct rfs_timer8_t *timer, enum rfs_timer_com_b mode)
 {
-    *timer->cra = ((*timer->cra & ~RFS_TIMER8_COMB_MASK) | mode);
+    *timer->cra = ((*timer->cra & ~RFS_TIMER_COMB_MASK) | mode);
 }
 
 /**
@@ -306,7 +305,29 @@ inline void rfs_timer16_set(struct rfs_timer16_t *timer, uint16_t value)
  */
 inline void rfs_timer16_set_clock(struct rfs_timer16_t *timer, enum rfs_timer16_clock clock)
 {
-    *rfs_timer16_crb(timer) = (*rfs_timer16_crb(timer) & ~RFS_TIMER16_CLOCK_MASK) | (clock & RFS_TIMER16_CLOCK_MASK);
+    *rfs_timer16_crb(timer) = (*rfs_timer16_crb(timer) & ~RFS_TIMER_CLOCK_MASK) | (clock & RFS_TIMER_CLOCK_MASK);
+}
+
+/**
+ * @brief Set the output mode for channel A on compare match
+ * 
+ * @param timer The structure that contains the timer information
+ * @param mode The channel A pin mode on compare match
+ */
+inline void rfs_timer16_set_compare_match_output_mode_a(struct rfs_timer16_t *timer, enum rfs_timer_com_a mode)
+{
+    *timer->cra = ((*timer->cra & ~RFS_TIMER_COMA_MASK) | mode);
+}
+
+/**
+ * @brief Set the output mode for channel B on compare match
+ * 
+ * @param timer The structure that contains the timer information
+ * @param mode The channel B pin mode on compare match
+ */
+inline void rfs_timer16_set_compare_match_output_mode_b(struct rfs_timer16_t *timer, enum rfs_timer_com_b mode)
+{
+    *timer->cra = ((*timer->cra & ~RFS_TIMER_COMB_MASK) | mode);
 }
 
 /**
