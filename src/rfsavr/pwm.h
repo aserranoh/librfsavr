@@ -38,6 +38,17 @@ struct rfs_pwm8_t {
 };
 
 /**
+ * @brief Struct that contains the information to control a 16-bit PWM signal
+ */
+struct rfs_pwm16_t {
+    struct rfs_timer16_t timer;
+    struct rfs_pin_t output_a;
+    struct rfs_pin_t output_b;
+    uint16_t *divisor_table;
+    int8_t divisor_table_size;
+};
+
+/**
  * @brief Initialize the 8-bit PWM
  * 
  * @param pwm The structure that contains the PWM information
@@ -152,7 +163,12 @@ inline void rfs_pwm8_set_duty_cycle_channel_b(struct rfs_pwm8_t *pwm, uint8_t du
     rfs_timer8_set_ocrb(&pwm->timer, duty_cycle);
 }
 
-/*void rfs_pwm_set_duty_cycle_16(struct rfs_pwm_t *pwm, uint16_t duty_cycle);
-void rfs_pwm_close(struct rfs_pwm_t *pwm);*/
+/**
+ * @brief Initialize the 16-bit PWM
+ * 
+ * @param pwm The structure that contains the PWM information
+ * @param timer Which timer to use to control the PWM signal
+ */
+void rfs_pwm16_init(struct rfs_pwm16_t *pwm, enum rfs_timer16_enum timer);
 
 #endif

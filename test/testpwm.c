@@ -224,6 +224,14 @@ void test_close_timer2()
     write_result(buffer, size);
 }
 
+void test_init_timer1()
+{
+    struct rfs_pwm16_t pwm;
+    rfs_pwm16_init(&pwm, RFS_TIMER1);
+    uint8_t size = sprintf(buffer, "1:%p,%p\n", pwm.timer.cra, &TCCR1A);
+    write_result(buffer, size);
+}
+
 int main()
 {
     init_usart();
@@ -338,6 +346,8 @@ int main()
     test_set_duty_cycle_channel_b_timer2(108, 255);
     test_close_timer0();
     test_close_timer2();
+
+    test_init_timer1();
 
     // Loop forever
     while (1);

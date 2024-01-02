@@ -124,8 +124,7 @@ void rfs_pwm8_set_frequency_exact(struct rfs_pwm8_t *pwm, uint32_t frequency, ui
     rfs_timer8_set_ocra(&pwm->timer, ocra);
 }
 
-/*
-void rfs_pwm_close(struct rfs_pwm_t *pwm)
+void rfs_pwm16_init(struct rfs_pwm16_t *pwm, enum rfs_timer16_enum timer)
 {
-
-}*/
+    rfs_timer16_init(&(pwm->timer), timer);
+}

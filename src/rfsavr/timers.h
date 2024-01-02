@@ -32,6 +32,10 @@ along with RobotsFromScratch; see the file COPYING.  If not, see
 #define RFS_TIMER8_CRA_MODE_MASK    0b00000011
 #define RFS_TIMER8_CRB_MODE_MASK    0b00001000
 
+#define RFS_TIMER16_CRA_MODE_MASK   0b00000011
+#define RFS_TIMER16_CRB_MODE_MASK   0b00011000
+#define RFS_TIMER16_CLOCK_MASK      0b00000111
+
 /**
  * @brief Struct that contains all the address to all the registers necessary to control the 8-bit timer
  */
@@ -40,44 +44,47 @@ struct rfs_timer8_t {
 };
 
 /**
- * @brief Macros to obtain the addresses of the timer related registers from the TCCRXA register
+ * @brief Struct that contains all the address to all the registers necessary to control the 16-bit timer
  */
-#define rfs_timer8_crb(pwm)    ((pwm)->cra + 1)
-#define rfs_timer8_cnt(pwm)    ((pwm)->cra + 2)
-#define rfs_timer8_ocra(pwm)   ((pwm)->cra + 3)
-#define rfs_timer8_ocrb(pwm)   ((pwm)->cra + 4)
-
-/**
- * @brief Struct that contains all the address to all the registers necessary to control the timer
- */
-struct rfs_timer_t {
+struct rfs_timer16_t {
     volatile uint8_t *cra;
-    volatile uint8_t *crb;
-    volatile uint8_t *crc;
-    volatile uint16_t *cnt;
-    volatile uint16_t *ocra;
-    volatile uint16_t *ocrb;
-    volatile uint16_t *icr;
-    volatile uint8_t *ifr;
 };
 
+/**
+ * @brief Macros to obtain the addresses of the timer related registers from the TCCRXA register
+ */
+#define rfs_timer8_crb(pwm)     ((pwm)->cra + 1)
+#define rfs_timer8_cnt(pwm)     ((pwm)->cra + 2)
+#define rfs_timer8_ocra(pwm)    ((pwm)->cra + 3)
+#define rfs_timer8_ocrb(pwm)    ((pwm)->cra + 4)
+
+#define rfs_timer16_crb(pwm)    ((pwm)->cra + 1)
+#define rfs_timer16_crc(pwm)    ((pwm)->cra + 2)
+#define rfs_timer16_cnt(pwm)    (uint16_t *)((pwm)->cra + 4)
+#define rfs_timer16_icr(pwm)    (uint16_t *)((pwm)->cra + 6)
+#define rfs_timer16_ocra(pwm)   (uint16_t *)((pwm)->cra + 8)
+#define rfs_timer16_ocrb(pwm)   (uint16_t *)((pwm)->cra + 10)
+
+/**
+ * @brief Enumeration that contain the possible clock divisor for an 8-bit timer
+ */
 enum rfs_timer8_clock {
-    RFS_TIMER0_CLOCK_NONE = 0,
-    RFS_TIMER0_CLOCK_1 = 1,
-    RFS_TIMER0_CLOCK_8 = 2,
-    RFS_TIMER0_CLOCK_64 = 3,
-    RFS_TIMER0_CLOCK_256 = 4,
-    RFS_TIMER0_CLOCK_1024 = 5,
-    RFS_TIMER0_EXTERNAL_FALLING = 6,
-    RFS_TIMER0_EXTERNAL_RAISING = 7,
-    RFS_TIMER2_CLOCK_NONE = 0,
-    RFS_TIMER2_CLOCK_1 = 1,
-    RFS_TIMER2_CLOCK_8 = 2,
-    RFS_TIMER2_CLOCK_32 = 3,
-    RFS_TIMER2_CLOCK_64 = 4,
-    RFS_TIMER2_CLOCK_128 = 5,
-    RFS_TIMER2_CLOCK_256 = 6,
-    RFS_TIMER2_CLOCK_1024 = 7,
+    RFS_TIMER0_CLOCK_NONE               = 0,
+    RFS_TIMER0_CLOCK_1                  = 1,
+    RFS_TIMER0_CLOCK_8                  = 2,
+    RFS_TIMER0_CLOCK_64                 = 3,
+    RFS_TIMER0_CLOCK_256                = 4,
+    RFS_TIMER0_CLOCK_1024               = 5,
+    RFS_TIMER0_CLOCK_EXTERNAL_FALLING   = 6,
+    RFS_TIMER0_CLOCK_EXTERNAL_RAISING   = 7,
+    RFS_TIMER2_CLOCK_NONE               = 0,
+    RFS_TIMER2_CLOCK_1                  = 1,
+    RFS_TIMER2_CLOCK_8                  = 2,
+    RFS_TIMER2_CLOCK_32                 = 3,
+    RFS_TIMER2_CLOCK_64                 = 4,
+    RFS_TIMER2_CLOCK_128                = 5,
+    RFS_TIMER2_CLOCK_256                = 6,
+    RFS_TIMER2_CLOCK_1024               = 7,
 };
 
 /**
@@ -92,44 +99,54 @@ enum rfs_timer8_enum {
  * @brief Enumeration for the 8-bit timer modes
  */
 enum rfs_timer8_mode {
-    RFS_TIMER8_MODE_NORMAL = 0,
-    RFS_TIMER8_MODE_PWM_PHASE_CORRECT = 1,
-    RFS_TIMER8_MODE_CTC = 2,
-    RFS_TIMER8_MODE_FAST_PWM = 3,
-    RFS_TIMER8_MODE_PWM_PHASE_CORRECT_OCRA = 9,
-    RFS_TIMER8_MODE_FAST_PWM_OCRA = 11,
+    RFS_TIMER8_MODE_NORMAL                  = 0,
+    RFS_TIMER8_MODE_PWM_PHASE_CORRECT       = 1,
+    RFS_TIMER8_MODE_CTC                     = 2,
+    RFS_TIMER8_MODE_FAST_PWM                = 3,
+    RFS_TIMER8_MODE_PWM_PHASE_CORRECT_OCRA  = 9,
+    RFS_TIMER8_MODE_FAST_PWM_OCRA           = 11,
 };
 
 /**
- * @brief Enumeration with all the timers on the system
+ * @brief Enumeration with the 16-bit timers
  */
-enum rfs_timers {
+enum rfs_timer16_enum {
     RFS_TIMER1
+};
+
+/**
+ * @brief Enumeration that contain the possible clock divisor for a 16-bit timer
+ */
+enum rfs_timer16_clock {
+    RFS_TIMER1_CLOCK_NONE               = 0,
+    RFS_TIMER1_CLOCK_1                  = 1,
+    RFS_TIMER1_CLOCK_8                  = 2,
+    RFS_TIMER1_CLOCK_64                 = 3,
+    RFS_TIMER1_CLOCK_256                = 4,
+    RFS_TIMER1_CLOCK_1024               = 5,
+    RFS_TIMER1_CLOCK_EXTERNAL_FALLING   = 6,
+    RFS_TIMER1_CLOCK_EXTERNAL_RAISING   = 7,
 };
 
 /**
  * @brief Enumeration with the timer modes
  */
-enum rfs_timer_modes {
-    RFS_TIMER16_NORMAL,
-    RFS_TIMER16_PWM_PHASECORRECT_8,
-    RFS_TIMER16_PWM_PHASECORRECT_9,
-    RFS_TIMER16_PWM_PHASECORRECT_10,
-    RFS_TIMER16_CTC_OCR1A,
-};
-
-/**
- * @brief Enumeration with the possible clock prescaling values
- */
-enum rfs_timer_clocks {
-    RFS_TIMER16_NONE,
-    RFS_TIMER16_1,
-    RFS_TIMER16_8,
-    RFS_TIMER16_64,
-    RFS_TIMER16_256,
-    RFS_TIMER16_1024,
-    RFS_TIMER16_FALLING,
-    RFS_TIMER16_RAISING
+enum rfs_timer16_mode {
+    RFS_TIMER16_MODE_NORMAL                             = 0b00000,
+    RFS_TIMER16_MODE_PWM_PHASE_CORRECT_8                = 0b00001,
+    RFS_TIMER16_MODE_PWM_PHASE_CORRECT_9                = 0b00010,
+    RFS_TIMER16_MODE_PWM_PHASECORRECT_10                = 0b00011,
+    RFS_TIMER16_MODE_CTC_OCRA                           = 0b01000,
+    RFS_TIMER16_MODE_FAST_PWM_8                         = 0b01001,
+    RFS_TIMER16_MODE_FAST_PWM_9                         = 0b01010,
+    RFS_TIMER16_MODE_FAST_PWM_10                        = 0b01011,
+    RFS_TIMER16_MODE_PWM_PHASE_FREQUENCY_CORRECT_ICR    = 0b10000,
+    RFS_TIMER16_MODE_PWM_PHASE_FREQUENCY_CORRECT_OCRA   = 0b10001,
+    RFS_TIMER16_MODE_PWM_PHASE_CORRECT_ICR              = 0b10010,
+    RFS_TIMER16_MODE_PWM_PHASE_CORRECT_OCRA             = 0b10011,
+    RFS_TIMER16_MODE_CTC_ICR                            = 0b11000,
+    RFS_TIMER16_MODE_FAST_PWM_ICR                       = 0b11010,
+    RFS_TIMER16_MODE_FAST_PWM_OCRA                      = 0b11011,
 };
 
 /**
@@ -227,15 +244,23 @@ inline void rfs_timer8_set_ocrb(struct rfs_timer8_t *timer, uint8_t ocrb)
 }
 
 /**
+ * @brief Initialize the timer
+ * 
+ * @param timer The structure that contains the timer information
+ * @param which Which timer to use
+ */
+void rfs_timer16_init(struct rfs_timer16_t *timer, enum rfs_timer16_enum which);
+
+/**
  * @brief Return the timer counter value
  * 
  * @param timer The structure that contains the timer information
  * 
  * @returns The timer counter value
  */
-inline uint16_t rfs_timer16_get(struct rfs_timer_t *timer)
+inline uint16_t rfs_timer16_get(struct rfs_timer16_t *timer)
 {
-    return *timer->cnt;
+    return *rfs_timer16_cnt(timer);
 }
 
 /**
@@ -245,18 +270,10 @@ inline uint16_t rfs_timer16_get(struct rfs_timer_t *timer)
  * 
  * @returns Whether the OCA flag is active
  */
-inline int8_t rfs_timer16_get_oca_flag(struct rfs_timer_t *timer)
+/*inline int8_t rfs_timer16_get_oca_flag(struct rfs_timer16_t *timer)
 {
     return *timer->ifr & ~_BV(OCF1A);
-}
-
-/**
- * @brief Initialize the timer
- * 
- * @param timer The structure that contains the timer information
- * @param which Which timer to use
- */
-void rfs_timer16_init(struct rfs_timer_t *timer, enum rfs_timers which);
+}*/
 
 /**
  * @brief Reset the OCA flag
@@ -265,10 +282,10 @@ void rfs_timer16_init(struct rfs_timer_t *timer, enum rfs_timers which);
  * 
  * @param timer The structure that contains the timer information
  */
-inline void rfs_timer16_reset_oca_flag(struct rfs_timer_t *timer)
+/*inline void rfs_timer16_reset_oca_flag(struct rfs_timer_t *timer)
 {
     *timer->ifr |= _BV(OCF1A);
-}
+}*/
 
 /**
  * @brief Set the timer counter value
@@ -276,9 +293,9 @@ inline void rfs_timer16_reset_oca_flag(struct rfs_timer_t *timer)
  * @param timer The structure that contains the timer information
  * @param value The new counter value
  */
-inline void rfs_timer16_set(struct rfs_timer_t *timer, uint16_t value)
+inline void rfs_timer16_set(struct rfs_timer16_t *timer, uint16_t value)
 {
-    *timer->cnt = value;
+    *rfs_timer16_cnt(timer) = value;
 }
 
 /**
@@ -287,7 +304,10 @@ inline void rfs_timer16_set(struct rfs_timer_t *timer, uint16_t value)
  * @param timer The structure that contains the timer information
  * @param clock The clock prescaler value
  */
-void rfs_timer16_setclock(struct rfs_timer_t *timer, enum rfs_timer_clocks clock);
+inline void rfs_timer16_set_clock(struct rfs_timer16_t *timer, enum rfs_timer16_clock clock)
+{
+    *rfs_timer16_crb(timer) = (*rfs_timer16_crb(timer) & ~RFS_TIMER16_CLOCK_MASK) | (clock & RFS_TIMER16_CLOCK_MASK);
+}
 
 /**
  * @brief Set the timer mode
@@ -295,7 +315,7 @@ void rfs_timer16_setclock(struct rfs_timer_t *timer, enum rfs_timer_clocks clock
  * @param timer The structure that contains the timer information
  * @param mode The timer mode
  */
-void rfs_timer16_setmode(struct rfs_timer_t *timer, enum rfs_timer_modes mode);
+void rfs_timer16_set_mode(struct rfs_timer16_t *timer, enum rfs_timer16_mode mode);
 
 /**
  * @brief Set a new value on the OCRA register
@@ -303,9 +323,9 @@ void rfs_timer16_setmode(struct rfs_timer_t *timer, enum rfs_timer_modes mode);
  * @param timer The structure that contains the timer information
  * @param value The new OCRA register value
  */
-inline void rfs_timer16_setocra(struct rfs_timer_t *timer, uint16_t value)
+inline void rfs_timer16_set_ocra(struct rfs_timer16_t *timer, uint16_t value)
 {
-    *timer->ocra = value;
+    *rfs_timer16_ocra(timer) = value;
 }
 
 /**
@@ -314,9 +334,9 @@ inline void rfs_timer16_setocra(struct rfs_timer_t *timer, uint16_t value)
  * @param timer The structure that contains the timer information
  * @param value The new OCRB register value
  */
-inline void rfs_timer16_setocrb(struct rfs_timer_t *timer, uint16_t value)
+inline void rfs_timer16_set_ocrb(struct rfs_timer16_t *timer, uint16_t value)
 {
-    *timer->ocrb = value;
+    *rfs_timer16_ocrb(timer) = value;
 }
 
 #endif

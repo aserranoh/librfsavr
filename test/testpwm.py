@@ -9,7 +9,7 @@ from typing import Callable
 PWM_PROGRAM = "testpwm.hex"
 COMM_BAUDS = 19200
 SLEEP_TIME = 2
-ALL_TESTS_SIZE = 110
+ALL_TESTS_SIZE = 111
 COMA_MASK = 0b11000000
 COMB_MASK = 0b00110000
 DDRD6_MASK = 0b01000000
@@ -196,7 +196,9 @@ TESTS_CHECKS = {
     107: check_test_set_duty_cycle(128),
     108: check_test_set_duty_cycle(255),
     109: check_test_close,
-    110: check_test_close
+    110: check_test_close,
+
+    111: check_test_init,
 }
 
 def check_message_result(message: str) -> tuple[int, bool]:
