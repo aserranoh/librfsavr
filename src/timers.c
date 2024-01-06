@@ -22,11 +22,14 @@ along with RobotsFromScratch; see the file COPYING.  If not, see
 
 #include <rfsavr/timers.h>
 
-void rfs_timer8_init(struct rfs_timer8_t *timer, enum rfs_timer8_enum which)
+void rfs_timer_init(struct rfs_timer_t *timer, enum rfs_timer_enum which)
 {
     switch (which) {
     case RFS_TIMER0:
         timer->cra = &TCCR0A;
+        break;
+    case RFS_TIMER1:
+        timer->cra = &TCCR1A;
         break;
     case RFS_TIMER2:
         timer->cra = &TCCR2A;
@@ -34,19 +37,8 @@ void rfs_timer8_init(struct rfs_timer8_t *timer, enum rfs_timer8_enum which)
     }
 }
 
-void rfs_timer8_set_mode(struct rfs_timer8_t *timer, enum rfs_timer8_mode mode)
+void rfs_timer_set_mode_8(struct rfs_timer_t *timer, enum rfs_timer_mode_8 mode)
 {
-    *timer->cra = (*timer->cra & ~RFS_TIMER8_CRA_MODE_MASK) | (mode & RFS_TIMER8_CRA_MODE_MASK);
-    *rfs_timer8_crb(timer) = (*rfs_timer8_crb(timer) & ~RFS_TIMER8_CRB_MODE_MASK) | (mode & RFS_TIMER8_CRB_MODE_MASK);
-}
-
-void rfs_timer16_init(struct rfs_timer16_t *timer, enum rfs_timer16_enum which)
-{
-    timer->cra = &TCCR1A;
-}
-
-void rfs_timer16_set_mode(struct rfs_timer16_t *timer, enum rfs_timer16_mode mode)
-{
-    *timer->cra = (*timer->cra & ~RFS_TIMER16_CRA_MODE_MASK) | (mode & RFS_TIMER16_CRA_MODE_MASK);
-    *rfs_timer16_crb(timer) = (*rfs_timer16_crb(timer) & ~RFS_TIMER16_CRB_MODE_MASK) | (mode & RFS_TIMER16_CRB_MODE_MASK);
+    *timer->cra = (*timer->cra & ~RFS_TIMER_CRA_MODE_MASK) | (mode & RFS_TIMER_CRA_MODE_MASK);
+    *rfs_timer_crb(timer) = (*rfs_timer_crb(timer) & ~RFS_TIMER_CRB_MODE_MASK) | (mode & RFS_TIMER_CRB_MODE_MASK);
 }

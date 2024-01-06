@@ -48,222 +48,222 @@ void write_result(char *buffer, uint8_t size)
 
 void test_init_timer0()
 {
-    struct rfs_pwm8_t pwm;
-    rfs_pwm8_init(&pwm, RFS_TIMER0);
+    struct rfs_pwm_t pwm;
+    rfs_pwm_init(&pwm, RFS_TIMER0);
     uint8_t size = sprintf(buffer, "1:%p,%p\n", pwm.timer.cra, &TCCR0A);
     write_result(buffer, size);
 }
 
 void test_init_timer2()
 {
-    struct rfs_pwm8_t pwm;
-    rfs_pwm8_init(&pwm, RFS_TIMER2);
+    struct rfs_pwm_t pwm;
+    rfs_pwm_init(&pwm, RFS_TIMER2);
     uint8_t size = sprintf(buffer, "2:%p,%p\n", pwm.timer.cra, &TCCR2A);
     write_result(buffer, size);
 }
 
 void test_enable_channel_A_timer0()
 {
-    struct rfs_pwm8_t pwm;
-    rfs_pwm8_init(&pwm, RFS_TIMER0);
-    rfs_pwm8_enable_channel_a(&pwm);
+    struct rfs_pwm_t pwm;
+    rfs_pwm_init(&pwm, RFS_TIMER0);
+    rfs_pwm_enable_channel_a(&pwm);
     uint8_t size = sprintf(buffer, "3:%hhx,%hhx\n", TCCR0A, DDRD);
     write_result(buffer, size);
 }
 
 void test_enable_channel_B_timer0()
 {
-    struct rfs_pwm8_t pwm;
-    rfs_pwm8_init(&pwm, RFS_TIMER0);
-    rfs_pwm8_enable_channel_b(&pwm);
+    struct rfs_pwm_t pwm;
+    rfs_pwm_init(&pwm, RFS_TIMER0);
+    rfs_pwm_enable_channel_b(&pwm);
     uint8_t size = sprintf(buffer, "4:%hhx,%hhx\n", TCCR0A, DDRD);
     write_result(buffer, size);
 }
 
 void test_enable_channel_A_timer2()
 {
-    struct rfs_pwm8_t pwm;
-    rfs_pwm8_init(&pwm, RFS_TIMER2);
-    rfs_pwm8_enable_channel_a(&pwm);
+    struct rfs_pwm_t pwm;
+    rfs_pwm_init(&pwm, RFS_TIMER2);
+    rfs_pwm_enable_channel_a(&pwm);
     uint8_t size = sprintf(buffer, "5:%hhx,%hhx\n", TCCR2A, DDRB);
     write_result(buffer, size);
 }
 
 void test_enable_channel_B_timer2()
 {
-    struct rfs_pwm8_t pwm;
-    rfs_pwm8_init(&pwm, RFS_TIMER2);
-    rfs_pwm8_enable_channel_b(&pwm);
+    struct rfs_pwm_t pwm;
+    rfs_pwm_init(&pwm, RFS_TIMER2);
+    rfs_pwm_enable_channel_b(&pwm);
     uint8_t size = sprintf(buffer, "6:%hhx,%hhx\n", TCCR2A, DDRD);
     write_result(buffer, size);
 }
 
 void test_disable_channel_A_timer0()
 {
-    struct rfs_pwm8_t pwm;
-    rfs_pwm8_init(&pwm, RFS_TIMER0);
-    rfs_pwm8_disable_channel_a(&pwm);
+    struct rfs_pwm_t pwm;
+    rfs_pwm_init(&pwm, RFS_TIMER0);
+    rfs_pwm_disable_channel_a(&pwm);
     uint8_t size = sprintf(buffer, "7:%hhx\n", TCCR0A);
     write_result(buffer, size);
 }
 
 void test_disable_channel_B_timer0()
 {
-    struct rfs_pwm8_t pwm;
-    rfs_pwm8_init(&pwm, RFS_TIMER0);
-    rfs_pwm8_disable_channel_b(&pwm);
+    struct rfs_pwm_t pwm;
+    rfs_pwm_init(&pwm, RFS_TIMER0);
+    rfs_pwm_disable_channel_b(&pwm);
     uint8_t size = sprintf(buffer, "8:%hhx\n", TCCR0A);
     write_result(buffer, size);
 }
 
 void test_disable_channel_A_timer2()
 {
-    struct rfs_pwm8_t pwm;
-    rfs_pwm8_init(&pwm, RFS_TIMER2);
-    rfs_pwm8_disable_channel_a(&pwm);
+    struct rfs_pwm_t pwm;
+    rfs_pwm_init(&pwm, RFS_TIMER2);
+    rfs_pwm_disable_channel_a(&pwm);
     uint8_t size = sprintf(buffer, "9:%hhx\n", TCCR2A);
     write_result(buffer, size);
 }
 
 void test_disable_channel_B_timer2()
 {
-    struct rfs_pwm8_t pwm;
-    rfs_pwm8_init(&pwm, RFS_TIMER2);
-    rfs_pwm8_disable_channel_b(&pwm);
+    struct rfs_pwm_t pwm;
+    rfs_pwm_init(&pwm, RFS_TIMER2);
+    rfs_pwm_disable_channel_b(&pwm);
     uint8_t size = sprintf(buffer, "10:%hhx\n", TCCR2A);
     write_result(buffer, size);
 }
 
 void test_set_frequency_timer0(uint8_t test_id, uint32_t frequency)
 {
-    struct rfs_pwm8_t pwm;
-    rfs_pwm8_init(&pwm, RFS_TIMER0);
-    rfs_pwm8_set_frequency(&pwm, frequency, F_CPU);
+    struct rfs_pwm_t pwm;
+    rfs_pwm_init(&pwm, RFS_TIMER0);
+    rfs_pwm_set_frequency(&pwm, frequency, F_CPU);
     uint8_t size = sprintf(buffer, "%hhu:%hhx,%hhx\n", test_id, TCCR0A, TCCR0B);
     write_result(buffer, size);
 }
 
 void test_set_frequency_timer2(uint8_t test_id, uint32_t frequency)
 {
-    struct rfs_pwm8_t pwm;
-    rfs_pwm8_init(&pwm, RFS_TIMER2);
-    rfs_pwm8_set_frequency(&pwm, frequency, F_CPU);
+    struct rfs_pwm_t pwm;
+    rfs_pwm_init(&pwm, RFS_TIMER2);
+    rfs_pwm_set_frequency(&pwm, frequency, F_CPU);
     uint8_t size = sprintf(buffer, "%hhu:%hhx,%hhx\n", test_id, TCCR2A, TCCR2B);
     write_result(buffer, size);
 }
 
 void test_set_frequency_exact_timer0(uint8_t test_id, uint32_t frequency)
 {
-    struct rfs_pwm8_t pwm;
-    rfs_pwm8_init(&pwm, RFS_TIMER0);
-    rfs_pwm8_set_frequency_exact(&pwm, frequency, F_CPU);
+    struct rfs_pwm_t pwm;
+    rfs_pwm_init(&pwm, RFS_TIMER0);
+    rfs_pwm_set_frequency_exact(&pwm, frequency, F_CPU);
     uint8_t size = sprintf(buffer, "%hhu:%hhx,%hhx,%hhx\n", test_id, TCCR0A, TCCR0B, OCR0A);
     write_result(buffer, size);
 }
 
 void test_set_frequency_exact_timer2(uint8_t test_id, uint32_t frequency)
 {
-    struct rfs_pwm8_t pwm;
-    rfs_pwm8_init(&pwm, RFS_TIMER2);
-    rfs_pwm8_set_frequency_exact(&pwm, frequency, F_CPU);
+    struct rfs_pwm_t pwm;
+    rfs_pwm_init(&pwm, RFS_TIMER2);
+    rfs_pwm_set_frequency_exact(&pwm, frequency, F_CPU);
     uint8_t size = sprintf(buffer, "%hhu:%hhx,%hhx,%hhx\n", test_id, TCCR2A, TCCR2B, OCR2A);
     write_result(buffer, size);
 }
 
 void test_set_duty_cycle_channel_a_timer0(uint8_t test_id, uint8_t duty_cycle)
 {
-    struct rfs_pwm8_t pwm;
-    rfs_pwm8_init(&pwm, RFS_TIMER0);
-    rfs_pwm8_set_duty_cycle_channel_a(&pwm, duty_cycle);
+    struct rfs_pwm_t pwm;
+    rfs_pwm_init(&pwm, RFS_TIMER0);
+    rfs_pwm_set_duty_cycle_channel_a_8(&pwm, duty_cycle);
     uint8_t size = sprintf(buffer, "%hhu:%hhx\n", test_id, OCR0A);
     write_result(buffer, size);
 }
 
 void test_set_duty_cycle_channel_b_timer0(uint8_t test_id, uint8_t duty_cycle)
 {
-    struct rfs_pwm8_t pwm;
-    rfs_pwm8_init(&pwm, RFS_TIMER0);
-    rfs_pwm8_set_duty_cycle_channel_b(&pwm, duty_cycle);
+    struct rfs_pwm_t pwm;
+    rfs_pwm_init(&pwm, RFS_TIMER0);
+    rfs_pwm_set_duty_cycle_channel_b_8(&pwm, duty_cycle);
     uint8_t size = sprintf(buffer, "%hhu:%hhx\n", test_id, OCR0B);
     write_result(buffer, size);
 }
 
 void test_set_duty_cycle_channel_a_timer2(uint8_t test_id, uint8_t duty_cycle)
 {
-    struct rfs_pwm8_t pwm;
-    rfs_pwm8_init(&pwm, RFS_TIMER2);
-    rfs_pwm8_set_duty_cycle_channel_a(&pwm, duty_cycle);
+    struct rfs_pwm_t pwm;
+    rfs_pwm_init(&pwm, RFS_TIMER2);
+    rfs_pwm_set_duty_cycle_channel_a_8(&pwm, duty_cycle);
     uint8_t size = sprintf(buffer, "%hhu:%hhx\n", test_id, OCR2A);
     write_result(buffer, size);
 }
 
 void test_set_duty_cycle_channel_b_timer2(uint8_t test_id, uint8_t duty_cycle)
 {
-    struct rfs_pwm8_t pwm;
-    rfs_pwm8_init(&pwm, RFS_TIMER2);
-    rfs_pwm8_set_duty_cycle_channel_b(&pwm, duty_cycle);
+    struct rfs_pwm_t pwm;
+    rfs_pwm_init(&pwm, RFS_TIMER2);
+    rfs_pwm_set_duty_cycle_channel_b_8(&pwm, duty_cycle);
     uint8_t size = sprintf(buffer, "%hhu:%hhx\n", test_id, OCR2B);
     write_result(buffer, size);
 }
 
 void test_close_timer0()
 {
-    struct rfs_pwm8_t pwm;
-    rfs_pwm8_init(&pwm, RFS_TIMER0);
-    rfs_pwm8_close(&pwm);
+    struct rfs_pwm_t pwm;
+    rfs_pwm_init(&pwm, RFS_TIMER0);
+    rfs_pwm_close(&pwm);
     uint8_t size = sprintf(buffer, "109:%hhu,%hhu\n", TCCR0A, TCCR0B);
     write_result(buffer, size);
 }
 
 void test_close_timer2()
 {
-    struct rfs_pwm8_t pwm;
-    rfs_pwm8_init(&pwm, RFS_TIMER2);
-    rfs_pwm8_close(&pwm);
+    struct rfs_pwm_t pwm;
+    rfs_pwm_init(&pwm, RFS_TIMER2);
+    rfs_pwm_close(&pwm);
     uint8_t size = sprintf(buffer, "110:%hhu,%hhu\n", TCCR2A, TCCR2B);
     write_result(buffer, size);
 }
 
 void test_init_timer1()
 {
-    struct rfs_pwm16_t pwm;
-    rfs_pwm16_init(&pwm, RFS_TIMER1);
+    struct rfs_pwm_t pwm;
+    rfs_pwm_init(&pwm, RFS_TIMER1);
     uint8_t size = sprintf(buffer, "111:%p,%p\n", pwm.timer.cra, &TCCR1A);
     write_result(buffer, size);
 }
 
 void test_enable_channel_A_timer1()
 {
-    struct rfs_pwm16_t pwm;
-    rfs_pwm16_init(&pwm, RFS_TIMER1);
-    rfs_pwm16_enable_channel_a(&pwm);
+    struct rfs_pwm_t pwm;
+    rfs_pwm_init(&pwm, RFS_TIMER1);
+    rfs_pwm_enable_channel_a(&pwm);
     uint8_t size = sprintf(buffer, "112:%hhx,%hhx\n", TCCR1A, DDRB);
     write_result(buffer, size);
 }
 
 void test_enable_channel_B_timer1()
 {
-    struct rfs_pwm16_t pwm;
-    rfs_pwm16_init(&pwm, RFS_TIMER1);
-    rfs_pwm16_enable_channel_b(&pwm);
+    struct rfs_pwm_t pwm;
+    rfs_pwm_init(&pwm, RFS_TIMER1);
+    rfs_pwm_enable_channel_b(&pwm);
     uint8_t size = sprintf(buffer, "113:%hhx,%hhx\n", TCCR1A, DDRB);
     write_result(buffer, size);
 }
 
 void test_disable_channel_A_timer1()
 {
-    struct rfs_pwm16_t pwm;
-    rfs_pwm16_init(&pwm, RFS_TIMER1);
-    rfs_pwm16_disable_channel_a(&pwm);
+    struct rfs_pwm_t pwm;
+    rfs_pwm_init(&pwm, RFS_TIMER1);
+    rfs_pwm_disable_channel_a(&pwm);
     uint8_t size = sprintf(buffer, "7:%hhx\n", TCCR1A);
     write_result(buffer, size);
 }
 
 void test_disable_channel_B_timer1()
 {
-    struct rfs_pwm16_t pwm;
-    rfs_pwm16_init(&pwm, RFS_TIMER1);
-    rfs_pwm16_disable_channel_b(&pwm);
+    struct rfs_pwm_t pwm;
+    rfs_pwm_init(&pwm, RFS_TIMER1);
+    rfs_pwm_disable_channel_b(&pwm);
     uint8_t size = sprintf(buffer, "8:%hhx\n", TCCR1A);
     write_result(buffer, size);
 }

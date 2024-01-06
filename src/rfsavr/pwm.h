@@ -27,10 +27,10 @@ along with RobotsFromScratch; see the file COPYING.  If not, see
 #include "rfsavr/timers.h"
 
 /**
- * @brief Struct that contains the information to control an 8-bit PWM signal
+ * @brief Struct that contains the information to control a PWM signal
  */
-struct rfs_pwm8_t {
-    struct rfs_timer8_t timer;
+struct rfs_pwm_t {
+    struct rfs_timer_t timer;
     struct rfs_pin_t output_a;
     struct rfs_pin_t output_b;
     uint16_t *divisor_table;
@@ -38,39 +38,28 @@ struct rfs_pwm8_t {
 };
 
 /**
- * @brief Struct that contains the information to control a 16-bit PWM signal
- */
-struct rfs_pwm16_t {
-    struct rfs_timer16_t timer;
-    struct rfs_pin_t output_a;
-    struct rfs_pin_t output_b;
-    uint16_t *divisor_table;
-    int8_t divisor_table_size;
-};
-
-/**
- * @brief Initialize the 8-bit PWM
+ * @brief Initialize the PWM
  * 
  * @param pwm The structure that contains the PWM information
  * @param timer Which timer to use to control the PWM signal
  */
-void rfs_pwm8_init(struct rfs_pwm8_t *pwm, enum rfs_timer8_enum timer);
+void rfs_pwm_init(struct rfs_pwm_t *pwm, enum rfs_timer_enum timer);
 
 /**
- * @brief Shutdown the 8-bit PWM
+ * @brief Shutdown the PWM signal
  * 
  * @param pwm The structure that contains the PWM information
  */
-void rfs_pwm8_close(struct rfs_pwm8_t *pwm);
+void rfs_pwm_close(struct rfs_pwm_t *pwm);
 
 /**
  * @brief Disable PWM output on channel A
  * 
  * @param pwm The structure that contains the PWM information
  */
-inline void rfs_pwm8_disable_channel_a(struct rfs_pwm8_t *pwm)
+inline void rfs_pwm_disable_channel_a(struct rfs_pwm_t *pwm)
 {
-    rfs_timer8_set_compare_match_output_mode_a(&pwm->timer, RFS_TIMER_COMA_NORMAL);
+    rfs_timer_set_compare_match_output_mode_a(&pwm->timer, RFS_TIMER_COMA_NORMAL);
 }
 
 /**
@@ -78,9 +67,9 @@ inline void rfs_pwm8_disable_channel_a(struct rfs_pwm8_t *pwm)
  * 
  * @param pwm The structure that contains the PWM information
  */
-inline void rfs_pwm8_disable_channel_b(struct rfs_pwm8_t *pwm)
+inline void rfs_pwm_disable_channel_b(struct rfs_pwm_t *pwm)
 {
-    rfs_timer8_set_compare_match_output_mode_b(&pwm->timer, RFS_TIMER_COMB_NORMAL);
+    rfs_timer_set_compare_match_output_mode_b(&pwm->timer, RFS_TIMER_COMB_NORMAL);
 }
 
 /**
@@ -88,14 +77,14 @@ inline void rfs_pwm8_disable_channel_b(struct rfs_pwm8_t *pwm)
  * 
  * @param pwm The structure that contains the PWM information
  */
-void rfs_pwm8_enable_channel_a(struct rfs_pwm8_t *pwm);
+void rfs_pwm_enable_channel_a(struct rfs_pwm_t *pwm);
 
 /**
  * @brief Enable PWM output on channel B
  * 
  * @param pwm The structure that contains the PWM information
  */
-void rfs_pwm8_enable_channel_b(struct rfs_pwm8_t *pwm);
+void rfs_pwm_enable_channel_b(struct rfs_pwm_t *pwm);
 
 /**
  * @brief Set the PWM signal frequency
@@ -114,13 +103,13 @@ void rfs_pwm8_enable_channel_b(struct rfs_pwm8_t *pwm);
  * @param frequency The requested PWM signal frequency
  * @param cpu_frequency The CPU's clock frequency
  */
-void rfs_pwm8_set_frequency(struct rfs_pwm8_t *pwm, uint32_t frequency, uint32_t cpu_frequency);
+void rfs_pwm_set_frequency(struct rfs_pwm_t *pwm, uint32_t frequency, uint32_t cpu_frequency);
 
 /**
  * @brief Set an extact value for the PWM signal frequency
  * 
  * This method will try to set the exact requested PWM frequency. For that, first an aproximate value
- * is selected, like it is done by the rfs_pwm8_set_frequency method. Finally, the corresponding timer
+ * is selected, like it is done by the rfs_pwm_set_frequency method. Finally, the corresponding timer
  * is configured to use the value in OCRA tor the TOP value, and a suitable value for OCRA is computed
  * to obtain the requested frequency.
  * 
@@ -135,10 +124,10 @@ void rfs_pwm8_set_frequency(struct rfs_pwm8_t *pwm, uint32_t frequency, uint32_t
  * @param frequency The requested PWM signal frequency
  * @param cpu_frequency The CPU's clock frequency
  */
-void rfs_pwm8_set_frequency_exact(struct rfs_pwm8_t *pwm, uint32_t frequency, uint32_t cpu_frequency);
+void rfs_pwm_set_frequency_exact(struct rfs_pwm_t *pwm, uint32_t frequency, uint32_t cpu_frequency);
 
 /**
- * @brief Set the duty cycle for channel A of the given PWM module
+ * @brief Set the duty cycle for channel A of the given PWM module (8-bit timer)
  * 
  * Note that this method shouldn't be used if we are using an exact frequency, because the exact
  * frequency requires the top value to be in the OCRXA register. Thus, when an exact frequency
@@ -147,62 +136,20 @@ void rfs_pwm8_set_frequency_exact(struct rfs_pwm8_t *pwm, uint32_t frequency, ui
  * @param pwm The structure that contains the PWM information
  * @param duty_cycle The new duty cycle
  */
-inline void rfs_pwm8_set_duty_cycle_channel_a(struct rfs_pwm8_t *pwm, uint8_t duty_cycle)
+inline void rfs_pwm_set_duty_cycle_channel_a_8(struct rfs_pwm_t *pwm, uint8_t duty_cycle)
 {
-    rfs_timer8_set_ocra(&pwm->timer, duty_cycle);
+    rfs_timer_set_ocra_8(&pwm->timer, duty_cycle);
 }
 
 /**
- * @brief Set the duty cycle for channel B of the given PWM module
+ * @brief Set the duty cycle for channel B of the given PWM module (8-bit timer)
  * 
  * @param pwm The structure that contains the PWM information
  * @param duty_cycle The new duty cycle
  */
-inline void rfs_pwm8_set_duty_cycle_channel_b(struct rfs_pwm8_t *pwm, uint8_t duty_cycle)
+inline void rfs_pwm_set_duty_cycle_channel_b_8(struct rfs_pwm_t *pwm, uint8_t duty_cycle)
 {
-    rfs_timer8_set_ocrb(&pwm->timer, duty_cycle);
+    rfs_timer_set_ocrb_8(&pwm->timer, duty_cycle);
 }
-
-/**
- * @brief Initialize the 16-bit PWM
- * 
- * @param pwm The structure that contains the PWM information
- * @param timer Which timer to use to control the PWM signal
- */
-void rfs_pwm16_init(struct rfs_pwm16_t *pwm, enum rfs_timer16_enum timer);
-
-/**
- * @brief Disable PWM output on channel A
- * 
- * @param pwm The structure that contains the PWM information
- */
-inline void rfs_pwm16_disable_channel_a(struct rfs_pwm16_t *pwm)
-{
-    rfs_timer16_set_compare_match_output_mode_a(&pwm->timer, RFS_TIMER_COMA_NORMAL);
-}
-
-/**
- * @brief Disable PWM output on channel B
- * 
- * @param pwm The structure that contains the PWM information
- */
-inline void rfs_pwm16_disable_channel_b(struct rfs_pwm16_t *pwm)
-{
-    rfs_timer16_set_compare_match_output_mode_b(&pwm->timer, RFS_TIMER_COMB_NORMAL);
-}
-
-/**
- * @brief Enable PWM output on channel A
- * 
- * @param pwm The structure that contains the PWM information
- */
-void rfs_pwm16_enable_channel_a(struct rfs_pwm16_t *pwm);
-
-/**
- * @brief Enable PWM output on channel B
- * 
- * @param pwm The structure that contains the PWM information
- */
-void rfs_pwm16_enable_channel_b(struct rfs_pwm16_t *pwm);
 
 #endif

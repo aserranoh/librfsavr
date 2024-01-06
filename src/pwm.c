@@ -27,13 +27,19 @@ static int8_t RFS_TIMER0_TABLE_SIZE = 5;
 static uint16_t RFS_TIMER2_TABLE[] = {1, 8, 32, 64, 128, 256, 1024};
 static int8_t RFS_TIMER2_TABLE_SIZE = 7;
 
-void rfs_pwm8_init(struct rfs_pwm8_t *pwm, enum rfs_timer8_enum timer)
+void rfs_pwm_init(struct rfs_pwm_t *pwm, enum rfs_timer_enum timer)
 {
-    rfs_timer8_init(&(pwm->timer), timer);
+    rfs_timer_init(&(pwm->timer), timer);
     switch (timer) {
     case RFS_TIMER0:
         rfs_pin_init(&pwm->output_a, &PORTD, 6);
         rfs_pin_init(&pwm->output_b, &PORTD, 5);
+        pwm->divisor_table = RFS_TIMER0_TABLE;
+        pwm->divisor_table_size = RFS_TIMER0_TABLE_SIZE;
+        break;
+    case RFS_TIMER1:
+        rfs_pin_init(&pwm->output_a, &PORTB, 1);
+        rfs_pin_init(&pwm->output_b, &PORTB, 2);
         pwm->divisor_table = RFS_TIMER0_TABLE;
         pwm->divisor_table_size = RFS_TIMER0_TABLE_SIZE;
         break;
@@ -46,28 +52,28 @@ void rfs_pwm8_init(struct rfs_pwm8_t *pwm, enum rfs_timer8_enum timer)
     }
 }
 
-void rfs_pwm8_close(struct rfs_pwm8_t *pwm)
+void rfs_pwm_close(struct rfs_pwm_t *pwm)
 {
-    rfs_timer8_set_mode(&pwm->timer, RFS_TIMER8_MODE_NORMAL);
-    rfs_timer8_set_clock(&pwm->timer, RFS_TIMER0_CLOCK_NONE);
+    rfs_timer_set_mode_8(&pwm->timer, RFS_TIMER8_MODE_NORMAL);
+    rfs_timer_set_clock(&pwm->timer, RFS_TIMER_CLOCK_NONE);
 }
 
-void rfs_pwm8_enable_channel_a(struct rfs_pwm8_t *pwm)
+void rfs_pwm_enable_channel_a(struct rfs_pwm_t *pwm)
 {
-    rfs_timer8_set_compare_match_output_mode_a(&pwm->timer, RFS_TIMER_COMA_NONINVERT);
+    rfs_timer_set_compare_match_output_mode_a(&pwm->timer, RFS_TIMER_COMA_NONINVERT);
     rfs_pin_set_output(&pwm->output_a);
 }
 
-void rfs_pwm8_enable_channel_b(struct rfs_pwm8_t *pwm)
+void rfs_pwm_enable_channel_b(struct rfs_pwm_t *pwm)
 {
-    rfs_timer8_set_compare_match_output_mode_b(&pwm->timer, RFS_TIMER_COMB_NONINVERT);
+    rfs_timer_set_compare_match_output_mode_b(&pwm->timer, RFS_TIMER_COMB_NONINVERT);
     rfs_pin_set_output(&pwm->output_b);
 }
 
-static int8_t rfs_pwm8_set_clock_divisor_and_mode(struct rfs_pwm8_t *pwm, uint32_t target_frequency, uint32_t cpu_clock_frequency)
+static int8_t rfs_pwm_set_clock_divisor_and_mode(struct rfs_pwm_t *pwm, uint32_t target_frequency, uint32_t cpu_clock_frequency)
 {
     uint32_t divisor = (cpu_clock_frequency >> 8) / target_frequency;
-    enum rfs_timer8_mode mode = RFS_TIMER8_MODE_FAST_PWM;
+    enum rfs_timer_mode_8 mode = RFS_TIMER8_MODE_FAST_PWM;
 
     int8_t divisor_index = 0;
     int8_t i = 0;
@@ -78,22 +84,22 @@ static int8_t rfs_pwm8_set_clock_divisor_and_mode(struct rfs_pwm8_t *pwm, uint32
         mode = RFS_TIMER8_MODE_PWM_PHASE_CORRECT;
     }
 
-    rfs_timer8_set_mode(&pwm->timer, mode);
-    rfs_timer8_set_clock(&pwm->timer, divisor_index + 1);
+    rfs_timer_set_mode_8(&pwm->timer, mode);
+    rfs_timer_set_clock(&pwm->timer, divisor_index + 1);
 
     return divisor_index;
 }
 
-void rfs_pwm8_set_frequency(struct rfs_pwm8_t *pwm, uint32_t frequency, uint32_t cpu_frequency)
+void rfs_pwm_set_frequency(struct rfs_pwm_t *pwm, uint32_t frequency, uint32_t cpu_frequency)
 {
-    rfs_pwm8_set_clock_divisor_and_mode(pwm, frequency, cpu_frequency);
+    rfs_pwm_set_clock_divisor_and_mode(pwm, frequency, cpu_frequency);
 }
 
-void rfs_pwm8_set_frequency_exact(struct rfs_pwm8_t *pwm, uint32_t frequency, uint32_t cpu_frequency)
+void rfs_pwm_set_frequency_exact(struct rfs_pwm_t *pwm, uint32_t frequency, uint32_t cpu_frequency)
 {
     uint8_t ocra;
-    int8_t divisor_index = rfs_pwm8_set_clock_divisor_and_mode(pwm, frequency, cpu_frequency);
-    enum rfs_timer8_mode mode = rfs_timer8_get_mode(&pwm->timer);
+    int8_t divisor_index = rfs_pwm_set_clock_divisor_and_mode(pwm, frequency, cpu_frequency);
+    enum rfs_timer_mode_8 mode = rfs_timer_get_mode(&pwm->timer);
 
     // Extreme case, the requested frequency is greater than the maximum frequency
     if (frequency > (cpu_frequency >> 8)) {
@@ -112,7 +118,7 @@ void rfs_pwm8_set_frequency_exact(struct rfs_pwm8_t *pwm, uint32_t frequency, ui
     } else if (divisor_index + 1 < pwm->divisor_table_size) {
         mode = RFS_TIMER8_MODE_FAST_PWM_OCRA;
         ocra = cpu_frequency / (frequency * pwm->divisor_table[divisor_index + 1]);
-        rfs_timer8_set_clock(&pwm->timer, divisor_index + 2);
+        rfs_timer_set_clock(&pwm->timer, divisor_index + 2);
 
     // In the last case, we are under the minimum frequency
     } else {
@@ -120,25 +126,6 @@ void rfs_pwm8_set_frequency_exact(struct rfs_pwm8_t *pwm, uint32_t frequency, ui
         ocra = 255;
     }
 
-    rfs_timer8_set_mode(&pwm->timer, mode);
-    rfs_timer8_set_ocra(&pwm->timer, ocra);
-}
-
-void rfs_pwm16_init(struct rfs_pwm16_t *pwm, enum rfs_timer16_enum timer)
-{
-    rfs_timer16_init(&(pwm->timer), timer);
-    rfs_pin_init(&pwm->output_a, &PORTB, 1);
-    rfs_pin_init(&pwm->output_b, &PORTB, 2);
-}
-
-void rfs_pwm16_enable_channel_a(struct rfs_pwm16_t *pwm)
-{
-    rfs_timer16_set_compare_match_output_mode_a(&pwm->timer, RFS_TIMER_COMA_NONINVERT);
-    rfs_pin_set_output(&pwm->output_a);
-}
-
-void rfs_pwm16_enable_channel_b(struct rfs_pwm16_t *pwm)
-{
-    rfs_timer16_set_compare_match_output_mode_b(&pwm->timer, RFS_TIMER_COMB_NONINVERT);
-    rfs_pin_set_output(&pwm->output_b);
+    rfs_timer_set_mode_8(&pwm->timer, mode);
+    rfs_timer_set_ocra_8(&pwm->timer, ocra);
 }

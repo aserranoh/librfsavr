@@ -26,111 +26,57 @@ along with RobotsFromScratch; see the file COPYING.  If not, see
 #include <stdint.h>
 #include <avr/io.h>
 
+#define RFS_TIMER_CRA_MODE_MASK     0b00000011
+#define RFS_TIMER_CLOCK_MASK        0b00000111
+#define RFS_TIMER_CRB_MODE_MASK     0b00011000
 #define RFS_TIMER_COMA_MASK         0b11000000
 #define RFS_TIMER_COMB_MASK         0b00110000
-#define RFS_TIMER_CLOCK_MASK        0b00000111
-#define RFS_TIMER8_CRA_MODE_MASK    0b00000011
-#define RFS_TIMER8_CRB_MODE_MASK    0b00001000
-
-#define RFS_TIMER16_CRA_MODE_MASK   0b00000011
-#define RFS_TIMER16_CRB_MODE_MASK   0b00011000
 
 /**
- * @brief Struct that contains all the address to all the registers necessary to control the 8-bit timer
+ * @brief Struct that contains all the address to all the registers necessary to control the timer
  */
-struct rfs_timer8_t {
-    volatile uint8_t *cra;
-};
-
-/**
- * @brief Struct that contains all the address to all the registers necessary to control the 16-bit timer
- */
-struct rfs_timer16_t {
+struct rfs_timer_t {
     volatile uint8_t *cra;
 };
 
 /**
  * @brief Macros to obtain the addresses of the timer related registers from the TCCRXA register
  */
-#define rfs_timer8_crb(pwm)     ((pwm)->cra + 1)
-#define rfs_timer8_cnt(pwm)     ((pwm)->cra + 2)
-#define rfs_timer8_ocra(pwm)    ((pwm)->cra + 3)
-#define rfs_timer8_ocrb(pwm)    ((pwm)->cra + 4)
-
-#define rfs_timer16_crb(pwm)    ((pwm)->cra + 1)
-#define rfs_timer16_crc(pwm)    ((pwm)->cra + 2)
-#define rfs_timer16_cnt(pwm)    (uint16_t *)((pwm)->cra + 4)
-#define rfs_timer16_icr(pwm)    (uint16_t *)((pwm)->cra + 6)
-#define rfs_timer16_ocra(pwm)   (uint16_t *)((pwm)->cra + 8)
-#define rfs_timer16_ocrb(pwm)   (uint16_t *)((pwm)->cra + 10)
+#define rfs_timer_crb(pwm)      ((pwm)->cra + 1)
+#define rfs_timer_crc(pwm)      ((pwm)->cra + 2)
+#define rfs_timer_cnt_8(pwm)    ((pwm)->cra + 2)
+#define rfs_timer_ocra_8(pwm)   ((pwm)->cra + 3)
+#define rfs_timer_ocrb_8(pwm)   ((pwm)->cra + 4)
+#define rfs_timer_cnt_16(pwm)   (uint16_t *)((pwm)->cra + 4)
+#define rfs_timer_icr_16(pwm)   (uint16_t *)((pwm)->cra + 6)
+#define rfs_timer_ocra_16(pwm)  (uint16_t *)((pwm)->cra + 8)
+#define rfs_timer_ocrb_16(pwm)  (uint16_t *)((pwm)->cra + 10)
 
 /**
- * @brief Enumeration that contain the possible clock divisor for an 8-bit timer
+ * @brief Enumeration with the valid timers
  */
-enum rfs_timer8_clock {
-    RFS_TIMER0_CLOCK_NONE               = 0,
-    RFS_TIMER0_CLOCK_1                  = 1,
-    RFS_TIMER0_CLOCK_8                  = 2,
-    RFS_TIMER0_CLOCK_64                 = 3,
-    RFS_TIMER0_CLOCK_256                = 4,
-    RFS_TIMER0_CLOCK_1024               = 5,
-    RFS_TIMER0_CLOCK_EXTERNAL_FALLING   = 6,
-    RFS_TIMER0_CLOCK_EXTERNAL_RAISING   = 7,
-    RFS_TIMER2_CLOCK_NONE               = 0,
-    RFS_TIMER2_CLOCK_1                  = 1,
-    RFS_TIMER2_CLOCK_8                  = 2,
-    RFS_TIMER2_CLOCK_32                 = 3,
-    RFS_TIMER2_CLOCK_64                 = 4,
-    RFS_TIMER2_CLOCK_128                = 5,
-    RFS_TIMER2_CLOCK_256                = 6,
-    RFS_TIMER2_CLOCK_1024               = 7,
-};
-
-/**
- * @brief Enumeration with the 8-bit timers
- */
-enum rfs_timer8_enum {
+enum rfs_timer_enum {
     RFS_TIMER0,
+    RFS_TIMER1,
     RFS_TIMER2
 };
 
 /**
  * @brief Enumeration for the 8-bit timer modes
  */
-enum rfs_timer8_mode {
-    RFS_TIMER8_MODE_NORMAL                  = 0,
-    RFS_TIMER8_MODE_PWM_PHASE_CORRECT       = 1,
-    RFS_TIMER8_MODE_CTC                     = 2,
-    RFS_TIMER8_MODE_FAST_PWM                = 3,
-    RFS_TIMER8_MODE_PWM_PHASE_CORRECT_OCRA  = 9,
-    RFS_TIMER8_MODE_FAST_PWM_OCRA           = 11,
+enum rfs_timer_mode_8 {
+    RFS_TIMER8_MODE_NORMAL                  = 0b00000,
+    RFS_TIMER8_MODE_PWM_PHASE_CORRECT       = 0b00001,
+    RFS_TIMER8_MODE_CTC                     = 0b00010,
+    RFS_TIMER8_MODE_FAST_PWM                = 0b00011,
+    RFS_TIMER8_MODE_PWM_PHASE_CORRECT_OCRA  = 0b01001,
+    RFS_TIMER8_MODE_FAST_PWM_OCRA           = 0b01011,
 };
 
 /**
- * @brief Enumeration with the 16-bit timers
+ * @brief Enumeration for the 16-bit timer modes
  */
-enum rfs_timer16_enum {
-    RFS_TIMER1
-};
-
-/**
- * @brief Enumeration that contain the possible clock divisor for a 16-bit timer
- */
-enum rfs_timer16_clock {
-    RFS_TIMER1_CLOCK_NONE               = 0,
-    RFS_TIMER1_CLOCK_1                  = 1,
-    RFS_TIMER1_CLOCK_8                  = 2,
-    RFS_TIMER1_CLOCK_64                 = 3,
-    RFS_TIMER1_CLOCK_256                = 4,
-    RFS_TIMER1_CLOCK_1024               = 5,
-    RFS_TIMER1_CLOCK_EXTERNAL_FALLING   = 6,
-    RFS_TIMER1_CLOCK_EXTERNAL_RAISING   = 7,
-};
-
-/**
- * @brief Enumeration with the timer modes
- */
-enum rfs_timer16_mode {
+enum rfs_timer_mode_16 {
     RFS_TIMER16_MODE_NORMAL                             = 0b00000,
     RFS_TIMER16_MODE_PWM_PHASE_CORRECT_8                = 0b00001,
     RFS_TIMER16_MODE_PWM_PHASE_CORRECT_9                = 0b00010,
@@ -146,6 +92,27 @@ enum rfs_timer16_mode {
     RFS_TIMER16_MODE_CTC_ICR                            = 0b11000,
     RFS_TIMER16_MODE_FAST_PWM_ICR                       = 0b11010,
     RFS_TIMER16_MODE_FAST_PWM_OCRA                      = 0b11011,
+};
+
+/**
+ * @brief Enumeration that contain the possible clock divisor values for a timer
+ */
+enum rfs_timer_clock {
+    RFS_TIMER_CLOCK_NONE                = 0,
+    RFS_TIMER0_CLOCK_1                  = 1,
+    RFS_TIMER0_CLOCK_8                  = 2,
+    RFS_TIMER0_CLOCK_64                 = 3,
+    RFS_TIMER0_CLOCK_256                = 4,
+    RFS_TIMER0_CLOCK_1024               = 5,
+    RFS_TIMER0_CLOCK_EXTERNAL_FALLING   = 6,
+    RFS_TIMER0_CLOCK_EXTERNAL_RAISING   = 7,
+    RFS_TIMER2_CLOCK_1                  = 1,
+    RFS_TIMER2_CLOCK_8                  = 2,
+    RFS_TIMER2_CLOCK_32                 = 3,
+    RFS_TIMER2_CLOCK_64                 = 4,
+    RFS_TIMER2_CLOCK_128                = 5,
+    RFS_TIMER2_CLOCK_256                = 6,
+    RFS_TIMER2_CLOCK_1024               = 7,
 };
 
 /**
@@ -173,21 +140,78 @@ enum rfs_timer_com_b {
 };
 
 /**
- * @brief Initialize the 8-bit timer
+ * @brief Initialize the timer
  * 
  * @param timer The structure that contains the timer information
  * @param which Which timer to use
  */
-void rfs_timer8_init(struct rfs_timer8_t *timer, enum rfs_timer8_enum which);
+void rfs_timer_init(struct rfs_timer_t *timer, enum rfs_timer_enum which);
 
-inline enum rfs_timer8_mode rfs_timer8_get_mode(struct rfs_timer8_t *timer)
+/**
+ * @brief Return the timer counter value (8-bit)
+ * 
+ * @param timer The structure that contains the timer information
+ * 
+ * @returns The timer counter value
+ */
+inline uint8_t rfs_timer_get_8(struct rfs_timer_t *timer)
 {
-    return (*timer->cra & RFS_TIMER8_CRA_MODE_MASK) | (*rfs_timer8_crb(timer) & RFS_TIMER8_CRB_MODE_MASK);
+    return *rfs_timer_cnt_8(timer);
 }
 
-inline void rfs_timer8_set_clock(struct rfs_timer8_t *timer, enum rfs_timer8_clock clock)
+/**
+ * @brief Return the timer counter value (16-bit)
+ * 
+ * @param timer The structure that contains the timer information
+ * 
+ * @returns The timer counter value
+ */
+inline uint16_t rfs_timer_get_16(struct rfs_timer_t *timer)
 {
-    *rfs_timer8_crb(timer) = (*rfs_timer8_crb(timer) & ~RFS_TIMER_CLOCK_MASK) | clock;
+    return *rfs_timer_cnt_16(timer);
+}
+
+/**
+ * @brief Return the current mode of the timer
+ * 
+ * @param timer The structure that contains the timer information
+ */
+inline int8_t rfs_timer_get_mode(struct rfs_timer_t *timer)
+{
+    return (*timer->cra & RFS_TIMER_CRA_MODE_MASK) | (*rfs_timer_crb(timer) & RFS_TIMER_CRB_MODE_MASK);
+}
+
+/**
+ * @brief Set the timer counter value (8-bit)
+ * 
+ * @param timer The structure that contains the timer information
+ * @param value The new counter value
+ */
+inline void rfs_timer_set_8(struct rfs_timer_t *timer, uint8_t value)
+{
+    *rfs_timer_cnt_8(timer) = value;
+}
+
+/**
+ * @brief Set the timer counter value (16-bit)
+ * 
+ * @param timer The structure that contains the timer information
+ * @param value The new counter value
+ */
+inline void rfs_timer_set_16(struct rfs_timer_t *timer, uint16_t value)
+{
+    *rfs_timer_cnt_16(timer) = value;
+}
+
+/**
+ * @brief Set the timer clock source
+ * 
+ * @param timer The structure that contains the timer information
+ * @param clock The new clock source
+ */
+inline void rfs_timer_set_clock(struct rfs_timer_t *timer, enum rfs_timer_clock clock)
+{
+    *rfs_timer_crb(timer) = (*rfs_timer_crb(timer) & ~RFS_TIMER_CLOCK_MASK) | clock;
 }
 
 /**
@@ -196,7 +220,7 @@ inline void rfs_timer8_set_clock(struct rfs_timer8_t *timer, enum rfs_timer8_clo
  * @param timer The structure that contains the timer information
  * @param mode The channel A pin mode on compare match
  */
-inline void rfs_timer8_set_compare_match_output_mode_a(struct rfs_timer8_t *timer, enum rfs_timer_com_a mode)
+inline void rfs_timer_set_compare_match_output_mode_a(struct rfs_timer_t *timer, enum rfs_timer_com_a mode)
 {
     *timer->cra = ((*timer->cra & ~RFS_TIMER_COMA_MASK) | mode);
 }
@@ -207,59 +231,72 @@ inline void rfs_timer8_set_compare_match_output_mode_a(struct rfs_timer8_t *time
  * @param timer The structure that contains the timer information
  * @param mode The channel B pin mode on compare match
  */
-inline void rfs_timer8_set_compare_match_output_mode_b(struct rfs_timer8_t *timer, enum rfs_timer_com_b mode)
+inline void rfs_timer_set_compare_match_output_mode_b(struct rfs_timer_t *timer, enum rfs_timer_com_b mode)
 {
     *timer->cra = ((*timer->cra & ~RFS_TIMER_COMB_MASK) | mode);
 }
 
 /**
- * @brief Set the mode for the timer
+ * @brief Set the timer mode (8-bit)
  * 
  * @param timer The structure that contains the timer information
  * @param mode The timer working mode
  */
-void rfs_timer8_set_mode(struct rfs_timer8_t *timer, enum rfs_timer8_mode mode);
+void rfs_timer_set_mode_8(struct rfs_timer_t *timer, enum rfs_timer_mode_8 mode);
 
 /**
- * @brief Set the Output Compare value for channel A (OCRA)
+ * @brief Set the timer mode (16-bit)
+ * 
+ * @param timer The structure that contains the timer information
+ * @param mode The timer working mode
+ */
+inline void rfs_timer_set_mode_16(struct rfs_timer_t *timer, enum rfs_timer_mode_16 mode)
+{
+    rfs_timer_set_mode_8(timer, mode);
+}
+
+/**
+ * @brief Set the Output Compare value for channel A (OCRA), for an 8-bit timer
  * 
  * @param timer The structure that contains the timer information
  * @param mode The new OCRA value
  */
-inline void rfs_timer8_set_ocra(struct rfs_timer8_t *timer, uint8_t ocra)
+inline void rfs_timer_set_ocra_8(struct rfs_timer_t *timer, uint8_t ocra)
 {
-    *rfs_timer8_ocra(timer) = ocra;
+    *rfs_timer_ocra_8(timer) = ocra;
 }
 
 /**
- * @brief Set the Output Compare value for channel B (OCRB)
+ * @brief Set the Output Compare value for channel A (OCRA), for a 16-bit timer
+ * 
+ * @param timer The structure that contains the timer information
+ * @param value The new OCRA value
+ */
+inline void rfs_timer_set_ocra_16(struct rfs_timer_t *timer, uint16_t value)
+{
+    *rfs_timer_ocra_16(timer) = value;
+}
+
+/**
+ * @brief Set the Output Compare value for channel B (OCRB), for an 8-bit timer
  * 
  * @param timer The structure that contains the timer information
  * @param mode The new OCRB value
  */
-inline void rfs_timer8_set_ocrb(struct rfs_timer8_t *timer, uint8_t ocrb)
+inline void rfs_timer_set_ocrb_8(struct rfs_timer_t *timer, uint8_t ocrb)
 {
-    *rfs_timer8_ocrb(timer) = ocrb;
+    *rfs_timer_ocrb_8(timer) = ocrb;
 }
 
 /**
- * @brief Initialize the timer
+ * @brief Set the Output Compare value for channel B (OCRB), for a 16-bit timer
  * 
  * @param timer The structure that contains the timer information
- * @param which Which timer to use
+ * @param value The new OCRB value
  */
-void rfs_timer16_init(struct rfs_timer16_t *timer, enum rfs_timer16_enum which);
-
-/**
- * @brief Return the timer counter value
- * 
- * @param timer The structure that contains the timer information
- * 
- * @returns The timer counter value
- */
-inline uint16_t rfs_timer16_get(struct rfs_timer16_t *timer)
+inline void rfs_timer_set_ocrb_16(struct rfs_timer_t *timer, uint16_t value)
 {
-    return *rfs_timer16_cnt(timer);
+    *rfs_timer_ocrb_16(timer) = value;
 }
 
 /**
@@ -285,79 +322,5 @@ inline uint16_t rfs_timer16_get(struct rfs_timer16_t *timer)
 {
     *timer->ifr |= _BV(OCF1A);
 }*/
-
-/**
- * @brief Set the timer counter value
- * 
- * @param timer The structure that contains the timer information
- * @param value The new counter value
- */
-inline void rfs_timer16_set(struct rfs_timer16_t *timer, uint16_t value)
-{
-    *rfs_timer16_cnt(timer) = value;
-}
-
-/**
- * @brief Set the timer clock prescaler
- * 
- * @param timer The structure that contains the timer information
- * @param clock The clock prescaler value
- */
-inline void rfs_timer16_set_clock(struct rfs_timer16_t *timer, enum rfs_timer16_clock clock)
-{
-    *rfs_timer16_crb(timer) = (*rfs_timer16_crb(timer) & ~RFS_TIMER_CLOCK_MASK) | (clock & RFS_TIMER_CLOCK_MASK);
-}
-
-/**
- * @brief Set the output mode for channel A on compare match
- * 
- * @param timer The structure that contains the timer information
- * @param mode The channel A pin mode on compare match
- */
-inline void rfs_timer16_set_compare_match_output_mode_a(struct rfs_timer16_t *timer, enum rfs_timer_com_a mode)
-{
-    *timer->cra = ((*timer->cra & ~RFS_TIMER_COMA_MASK) | mode);
-}
-
-/**
- * @brief Set the output mode for channel B on compare match
- * 
- * @param timer The structure that contains the timer information
- * @param mode The channel B pin mode on compare match
- */
-inline void rfs_timer16_set_compare_match_output_mode_b(struct rfs_timer16_t *timer, enum rfs_timer_com_b mode)
-{
-    *timer->cra = ((*timer->cra & ~RFS_TIMER_COMB_MASK) | mode);
-}
-
-/**
- * @brief Set the timer mode
- * 
- * @param timer The structure that contains the timer information
- * @param mode The timer mode
- */
-void rfs_timer16_set_mode(struct rfs_timer16_t *timer, enum rfs_timer16_mode mode);
-
-/**
- * @brief Set a new value on the OCRA register
- * 
- * @param timer The structure that contains the timer information
- * @param value The new OCRA register value
- */
-inline void rfs_timer16_set_ocra(struct rfs_timer16_t *timer, uint16_t value)
-{
-    *rfs_timer16_ocra(timer) = value;
-}
-
-/**
- * @brief Set a new value on the OCRB register
- * 
- * @param timer The structure that contains the timer information
- * @param value The new OCRB register value
- */
-inline void rfs_timer16_set_ocrb(struct rfs_timer16_t *timer, uint16_t value)
-{
-    *rfs_timer16_ocrb(timer) = value;
-}
 
 #endif
