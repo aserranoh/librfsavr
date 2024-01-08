@@ -27,14 +27,22 @@ along with RobotsFromScratch; see the file COPYING.  If not, see
 #include "rfsavr/timers.h"
 
 /**
+ * @brief Enumeration for the possible PWM channels
+ */
+enum rfs_pwm_channel {
+    RFS_PWM_CHANNEL_A,
+    RFS_PWM_CHANNEL_B
+};
+
+/**
  * @brief Struct that contains the information to control a PWM signal
  */
 struct rfs_pwm_t {
     struct rfs_timer_t timer;
-    struct rfs_pin_t output_a;
-    struct rfs_pin_t output_b;
-    uint16_t *divisor_table;
-    int8_t divisor_table_size;
+    enum rfs_pwm_channel channel;
+    struct rfs_pin_t *pin;
+    volatile uint8_t *ocr;
+    struct rfs_list_u16_t *divisor_table;
 };
 
 /**
@@ -42,8 +50,9 @@ struct rfs_pwm_t {
  * 
  * @param pwm The structure that contains the PWM information
  * @param timer Which timer to use to control the PWM signal
+ * @param channel The channel to use (A or B)
  */
-void rfs_pwm_init(struct rfs_pwm_t *pwm, enum rfs_timer_enum timer);
+void rfs_pwm_init(struct rfs_pwm_t *pwm, enum rfs_timer_enum timer, enum rfs_pwm_channel channel);
 
 /**
  * @brief Shutdown the PWM signal
@@ -51,40 +60,6 @@ void rfs_pwm_init(struct rfs_pwm_t *pwm, enum rfs_timer_enum timer);
  * @param pwm The structure that contains the PWM information
  */
 void rfs_pwm_close(struct rfs_pwm_t *pwm);
-
-/**
- * @brief Disable PWM output on channel A
- * 
- * @param pwm The structure that contains the PWM information
- */
-inline void rfs_pwm_disable_channel_a(struct rfs_pwm_t *pwm)
-{
-    rfs_timer_set_compare_match_output_mode_a(&pwm->timer, RFS_TIMER_COMA_NORMAL);
-}
-
-/**
- * @brief Disable PWM output on channel B
- * 
- * @param pwm The structure that contains the PWM information
- */
-inline void rfs_pwm_disable_channel_b(struct rfs_pwm_t *pwm)
-{
-    rfs_timer_set_compare_match_output_mode_b(&pwm->timer, RFS_TIMER_COMB_NORMAL);
-}
-
-/**
- * @brief Enable PWM output on channel A
- * 
- * @param pwm The structure that contains the PWM information
- */
-void rfs_pwm_enable_channel_a(struct rfs_pwm_t *pwm);
-
-/**
- * @brief Enable PWM output on channel B
- * 
- * @param pwm The structure that contains the PWM information
- */
-void rfs_pwm_enable_channel_b(struct rfs_pwm_t *pwm);
 
 /**
  * @brief Set the PWM signal frequency

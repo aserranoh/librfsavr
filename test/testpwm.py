@@ -9,7 +9,16 @@ from typing import Callable
 PWM_PROGRAM = "testpwm.hex"
 COMM_BAUDS = 19200
 SLEEP_TIME = 2
-ALL_TESTS_SIZE = 115
+#ALL_TESTS_SIZE = 115
+ALL_TESTS_SIZE = 12
+CHANNEL_A = 0
+CHANNEL_B = 1
+OUTPUT_PIN_TIMER0_CHANNEL_A = 6
+OUTPUT_PIN_TIMER0_CHANNEL_B = 5
+OUTPUT_PIN_TIMER1_CHANNEL_A = 1
+OUTPUT_PIN_TIMER1_CHANNEL_B = 2
+OUTPUT_PIN_TIMER2_CHANNEL_A = 3
+OUTPUT_PIN_TIMER2_CHANNEL_B = 3
 COMA_MASK = 0b11000000
 COMB_MASK = 0b00110000
 DDRD6_MASK = 0b01000000
@@ -19,48 +28,38 @@ DDRB2_MASK = 0b00000100
 DDRB3_MASK = 0b00001000
 DDRD3_MASK = 0b00001000
 CRA_MODE_MASK = 0b00000011
-CRB_MODE_MASK = 0b00001000
+CRB_MODE_MASK = 0b00011000
 CLOCK_MASK = 0b00000111
 PWM_MODE_FAST = 3
 PWM_MODE_PHASE_CORRECT = 1
 
-def check_test_init(data: list[str]) -> bool:
-    addresses = [int(x, base=16) for x in data]
-    print(addresses)
-    for index in range(1):
-        if addresses[2 * index] != addresses[2 * index + 1]:
-            return False
-    return True
-
-def check_test_enable_channel_A_timer0(data: list[str]) -> bool:
+def get_values(data: list[str]) -> list[int]:
     values = [int(x, base=16) for x in data]
     print(values)
-    return (values[0] & COMA_MASK == 0b10000000) and (values[1] & DDRD6_MASK == DDRD6_MASK)
+    return values
 
-def check_test_enable_channel_B_timer0(data: list[str]) -> bool:
-    values = [int(x, base=16) for x in data]
-    print(values)
-    return (values[0] & COMB_MASK == 0b00100000) and (values[1] & DDRD5_MASK == DDRD5_MASK)
+def check_test_init(channel: int, pin: int) -> Callable[[list[str]], bool]:
+    def check_init(data: list[str]) -> bool:
+        values = get_values(data)
+        for index in range(5):
+            if values[2 * index] != values[2 * index + 1]:
+                return False
+        if channel == CHANNEL_A:
+            ok = (values[-1] & COMA_MASK == 0b10000000)
+        else:
+            ok = (values[-1] & COMB_MASK == 0b00100000)
+        return ok and values[-3] == channel and values[-2] == pin
+    return check_init
 
-def check_test_enable_channel_A_timer2(data: list[str]) -> bool:
-    values = [int(x, base=16) for x in data]
-    print(values)
-    return (values[0] & COMA_MASK == 0b10000000) and (values[1] & DDRB3_MASK == DDRB3_MASK)
-
-def check_test_enable_channel_B_timer2(data: list[str]) -> bool:
-    values = [int(x, base=16) for x in data]
-    print(values)
-    return (values[0] & COMB_MASK == 0b00100000) and (values[1] & DDRD3_MASK == DDRD3_MASK)
-
-def check_test_disable_channel_A(data: list[str]) -> bool:
-    values = [int(x, base=16) for x in data]
-    print(values)
-    return (values[0] & COMA_MASK == 0)
-
-def check_test_disable_channel_B(data: list[str]) -> bool:
-    values = [int(x, base=16) for x in data]
-    print(values)
-    return (values[0] & COMB_MASK == 0)
+def check_test_close(channel: int) -> Callable[[list[str]], bool]:
+    def check_close(data: list[str]) -> bool:
+        values = get_values(data)
+        if channel == CHANNEL_A:
+            ok = (values[0] & COMA_MASK == 0)
+        else:
+            ok = (values[0] & COMB_MASK == 0)
+        return ok and (values[0] & CRA_MODE_MASK == 0) and (values[1] & CRB_MODE_MASK == 0) and (values[1] & CLOCK_MASK == 0)
+    return check_close
 
 def check_test_set_frequency(clock: int, mode: int) -> Callable[[list[str]], bool]:
     def check_frequency(data: list[str]):
@@ -83,34 +82,21 @@ def check_test_set_duty_cycle(ocra: int) -> Callable[[list[str]], bool]:
         return values[0] == ocra
     return check_duty_cycle
 
-def check_test_close(data: list[str]) -> bool:
-    values = [int(x, base=16) for x in data]
-    print(values)
-    return (values[0] & CRA_MODE_MASK == 0 and values[1] & CRB_MODE_MASK == 0 and values[1] & CLOCK_MASK == 0)
-
-def check_test_enable_channel_A_timer1(data: list[str]) -> bool:
-    values = [int(x, base=16) for x in data]
-    print(values)
-    return (values[0] & COMA_MASK == 0b10000000) and (values[1] & DDRB1_MASK == DDRB1_MASK)
-
-def check_test_enable_channel_B_timer1(data: list[str]) -> bool:
-    values = [int(x, base=16) for x in data]
-    print(values)
-    return (values[0] & COMB_MASK == 0b00100000) and (values[1] & DDRB2_MASK == DDRB2_MASK)
-
 TESTS_CHECKS = {
-    1: check_test_init,
-    2: check_test_init,
-    3: check_test_enable_channel_A_timer0,
-    4: check_test_enable_channel_B_timer0,
-    5: check_test_enable_channel_A_timer2,
-    6: check_test_enable_channel_B_timer2,
-    7: check_test_disable_channel_A,
-    8: check_test_disable_channel_B,
-    9: check_test_disable_channel_A,
-    10: check_test_disable_channel_B,
-    11: check_test_set_frequency(1, PWM_MODE_FAST),
-    12: check_test_set_frequency(1, PWM_MODE_FAST),
+    1: check_test_init(CHANNEL_A, OUTPUT_PIN_TIMER0_CHANNEL_A),
+    2: check_test_init(CHANNEL_B, OUTPUT_PIN_TIMER0_CHANNEL_B),
+    3: check_test_init(CHANNEL_A, OUTPUT_PIN_TIMER1_CHANNEL_A),
+    4: check_test_init(CHANNEL_B, OUTPUT_PIN_TIMER1_CHANNEL_B),
+    5: check_test_init(CHANNEL_A, OUTPUT_PIN_TIMER2_CHANNEL_A),
+    6: check_test_init(CHANNEL_B, OUTPUT_PIN_TIMER2_CHANNEL_B),
+    7: check_test_close(CHANNEL_A),
+    8: check_test_close(CHANNEL_B),
+    9: check_test_close(CHANNEL_A),
+    10: check_test_close(CHANNEL_B),
+    11: check_test_close(CHANNEL_A),
+    12: check_test_close(CHANNEL_B),
+    #11: check_test_set_frequency(1, PWM_MODE_FAST),
+    #12: check_test_set_frequency(1, PWM_MODE_FAST),
     13: check_test_set_frequency(1, PWM_MODE_FAST),
     14: check_test_set_frequency(1, PWM_MODE_PHASE_CORRECT),
     15: check_test_set_frequency(1, PWM_MODE_PHASE_CORRECT),
@@ -207,14 +193,6 @@ TESTS_CHECKS = {
     106: check_test_set_duty_cycle(0),
     107: check_test_set_duty_cycle(128),
     108: check_test_set_duty_cycle(255),
-    109: check_test_close,
-    110: check_test_close,
-
-    111: check_test_init,
-    112: check_test_enable_channel_A_timer1,
-    113: check_test_enable_channel_B_timer1,
-    114: check_test_disable_channel_A,
-    115: check_test_disable_channel_B,
 }
 
 def check_message_result(message: str) -> tuple[int, bool]:

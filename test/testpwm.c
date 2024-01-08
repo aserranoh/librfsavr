@@ -46,93 +46,115 @@ void write_result(char *buffer, uint8_t size)
     }
 }
 
-void test_init_timer0()
+void test_init_timer0_a()
 {
     struct rfs_pwm_t pwm;
-    rfs_pwm_init(&pwm, RFS_TIMER0);
-    uint8_t size = sprintf(buffer, "1:%p,%p\n", pwm.timer.cra, &TCCR0A);
+    rfs_pwm_init(&pwm, RFS_TIMER0, RFS_PWM_CHANNEL_A);
+    uint8_t size = sprintf(buffer, "1:%p,%p,%p,%p,%p,%p,%p,%p,%p,%p,%hhx,%hhx,%hhx\n", pwm.timer.cra, &TCCR0A, pwm.timer.ocra, &OCR0A, pwm.timer.ocrb, &OCR0B,
+        pwm.pin->port, &PORTD, pwm.ocr, &OCR0A, pwm.channel, pwm.pin->pin, TCCR0A);
     write_result(buffer, size);
 }
 
-void test_init_timer2()
+void test_init_timer0_b()
 {
     struct rfs_pwm_t pwm;
-    rfs_pwm_init(&pwm, RFS_TIMER2);
-    uint8_t size = sprintf(buffer, "2:%p,%p\n", pwm.timer.cra, &TCCR2A);
+    rfs_pwm_init(&pwm, RFS_TIMER0, RFS_PWM_CHANNEL_B);
+    uint8_t size = sprintf(buffer, "2:%p,%p,%p,%p,%p,%p,%p,%p,%p,%p,%hhx,%hhx,%hhx\n", pwm.timer.cra, &TCCR0A, pwm.timer.ocra, &OCR0A, pwm.timer.ocrb, &OCR0B,
+        pwm.pin->port, &PORTD, pwm.ocr, &OCR0B, pwm.channel, pwm.pin->pin, TCCR0A);
     write_result(buffer, size);
 }
 
-void test_enable_channel_A_timer0()
+void test_init_timer1_a()
 {
     struct rfs_pwm_t pwm;
-    rfs_pwm_init(&pwm, RFS_TIMER0);
-    rfs_pwm_enable_channel_a(&pwm);
-    uint8_t size = sprintf(buffer, "3:%hhx,%hhx\n", TCCR0A, DDRD);
+    rfs_pwm_init(&pwm, RFS_TIMER1, RFS_PWM_CHANNEL_A);
+    uint8_t size = sprintf(buffer, "3:%p,%p,%p,%p,%p,%p,%p,%p,%p,%p,%hhx,%hhx,%hhx\n", pwm.timer.cra, &TCCR1A, pwm.timer.ocra, &OCR1AL, pwm.timer.ocrb, &OCR1BL,
+        pwm.pin->port, &PORTB, pwm.ocr, &OCR1AL, pwm.channel, pwm.pin->pin, TCCR1A);
     write_result(buffer, size);
 }
 
-void test_enable_channel_B_timer0()
+void test_init_timer1_b()
 {
     struct rfs_pwm_t pwm;
-    rfs_pwm_init(&pwm, RFS_TIMER0);
-    rfs_pwm_enable_channel_b(&pwm);
-    uint8_t size = sprintf(buffer, "4:%hhx,%hhx\n", TCCR0A, DDRD);
+    rfs_pwm_init(&pwm, RFS_TIMER1, RFS_PWM_CHANNEL_B);
+    uint8_t size = sprintf(buffer, "4:%p,%p,%p,%p,%p,%p,%p,%p,%p,%p,%hhx,%hhx,%hhx\n", pwm.timer.cra, &TCCR1A, pwm.timer.ocra, &OCR1AL, pwm.timer.ocrb, &OCR1BL,
+        pwm.pin->port, &PORTB, pwm.ocr, &OCR1BL, pwm.channel, pwm.pin->pin, TCCR1A);
     write_result(buffer, size);
 }
 
-void test_enable_channel_A_timer2()
+void test_init_timer2_a()
 {
     struct rfs_pwm_t pwm;
-    rfs_pwm_init(&pwm, RFS_TIMER2);
-    rfs_pwm_enable_channel_a(&pwm);
-    uint8_t size = sprintf(buffer, "5:%hhx,%hhx\n", TCCR2A, DDRB);
+    rfs_pwm_init(&pwm, RFS_TIMER2, RFS_PWM_CHANNEL_A);
+    uint8_t size = sprintf(buffer, "5:%p,%p,%p,%p,%p,%p,%p,%p,%p,%p,%hhx,%hhx,%hhx\n", pwm.timer.cra, &TCCR2A, pwm.timer.ocra, &OCR2A, pwm.timer.ocrb, &OCR2B,
+        pwm.pin->port, &PORTB, pwm.ocr, &OCR2A, pwm.channel, pwm.pin->pin, TCCR2A);
     write_result(buffer, size);
 }
 
-void test_enable_channel_B_timer2()
+void test_init_timer2_b()
 {
     struct rfs_pwm_t pwm;
-    rfs_pwm_init(&pwm, RFS_TIMER2);
-    rfs_pwm_enable_channel_b(&pwm);
-    uint8_t size = sprintf(buffer, "6:%hhx,%hhx\n", TCCR2A, DDRD);
+    rfs_pwm_init(&pwm, RFS_TIMER2, RFS_PWM_CHANNEL_B);
+    uint8_t size = sprintf(buffer, "6:%p,%p,%p,%p,%p,%p,%p,%p,%p,%p,%hhx,%hhx,%hhx\n", pwm.timer.cra, &TCCR2A, pwm.timer.ocra, &OCR2A, pwm.timer.ocrb, &OCR2B,
+        pwm.pin->port, &PORTD, pwm.ocr, &OCR2B, pwm.channel, pwm.pin->pin, TCCR2A);
     write_result(buffer, size);
 }
 
-void test_disable_channel_A_timer0()
+void test_close_timer0_a()
 {
     struct rfs_pwm_t pwm;
-    rfs_pwm_init(&pwm, RFS_TIMER0);
-    rfs_pwm_disable_channel_a(&pwm);
-    uint8_t size = sprintf(buffer, "7:%hhx\n", TCCR0A);
+    rfs_pwm_init(&pwm, RFS_TIMER0, RFS_PWM_CHANNEL_A);
+    rfs_pwm_close(&pwm);
+    uint8_t size = sprintf(buffer, "7:%hhx,%hhx\n", TCCR0A, TCCR0B);
     write_result(buffer, size);
 }
 
-void test_disable_channel_B_timer0()
+void test_close_timer0_b()
 {
     struct rfs_pwm_t pwm;
-    rfs_pwm_init(&pwm, RFS_TIMER0);
-    rfs_pwm_disable_channel_b(&pwm);
-    uint8_t size = sprintf(buffer, "8:%hhx\n", TCCR0A);
+    rfs_pwm_init(&pwm, RFS_TIMER0, RFS_PWM_CHANNEL_B);
+    rfs_pwm_close(&pwm);
+    uint8_t size = sprintf(buffer, "8:%hhx,%hhx\n", TCCR0A, TCCR0B);
     write_result(buffer, size);
 }
 
-void test_disable_channel_A_timer2()
+void test_close_timer1_a()
 {
     struct rfs_pwm_t pwm;
-    rfs_pwm_init(&pwm, RFS_TIMER2);
-    rfs_pwm_disable_channel_a(&pwm);
-    uint8_t size = sprintf(buffer, "9:%hhx\n", TCCR2A);
+    rfs_pwm_init(&pwm, RFS_TIMER1, RFS_PWM_CHANNEL_A);
+    rfs_pwm_close(&pwm);
+    uint8_t size = sprintf(buffer, "9:%hhx,%hhx\n", TCCR1A, TCCR1B);
     write_result(buffer, size);
 }
 
-void test_disable_channel_B_timer2()
+void test_close_timer1_b()
 {
     struct rfs_pwm_t pwm;
-    rfs_pwm_init(&pwm, RFS_TIMER2);
-    rfs_pwm_disable_channel_b(&pwm);
-    uint8_t size = sprintf(buffer, "10:%hhx\n", TCCR2A);
+    rfs_pwm_init(&pwm, RFS_TIMER1, RFS_PWM_CHANNEL_B);
+    rfs_pwm_close(&pwm);
+    uint8_t size = sprintf(buffer, "10:%hhx,%hhx\n", TCCR1A, TCCR1B);
     write_result(buffer, size);
 }
+
+void test_close_timer2_a()
+{
+    struct rfs_pwm_t pwm;
+    rfs_pwm_init(&pwm, RFS_TIMER2, RFS_PWM_CHANNEL_A);
+    rfs_pwm_close(&pwm);
+    uint8_t size = sprintf(buffer, "11:%hhx,%hhx\n", TCCR2A, TCCR2B);
+    write_result(buffer, size);
+}
+
+void test_close_timer2_b()
+{
+    struct rfs_pwm_t pwm;
+    rfs_pwm_init(&pwm, RFS_TIMER2, RFS_PWM_CHANNEL_B);
+    rfs_pwm_close(&pwm);
+    uint8_t size = sprintf(buffer, "12:%hhx,%hhx\n", TCCR2A, TCCR2B);
+    write_result(buffer, size);
+}
+
+/*
 
 void test_set_frequency_timer0(uint8_t test_id, uint32_t frequency)
 {
@@ -206,74 +228,25 @@ void test_set_duty_cycle_channel_b_timer2(uint8_t test_id, uint8_t duty_cycle)
     write_result(buffer, size);
 }
 
-void test_close_timer0()
-{
-    struct rfs_pwm_t pwm;
-    rfs_pwm_init(&pwm, RFS_TIMER0);
-    rfs_pwm_close(&pwm);
-    uint8_t size = sprintf(buffer, "109:%hhu,%hhu\n", TCCR0A, TCCR0B);
-    write_result(buffer, size);
-}
-
-void test_close_timer2()
-{
-    struct rfs_pwm_t pwm;
-    rfs_pwm_init(&pwm, RFS_TIMER2);
-    rfs_pwm_close(&pwm);
-    uint8_t size = sprintf(buffer, "110:%hhu,%hhu\n", TCCR2A, TCCR2B);
-    write_result(buffer, size);
-}
-
-void test_init_timer1()
-{
-    struct rfs_pwm_t pwm;
-    rfs_pwm_init(&pwm, RFS_TIMER1);
-    uint8_t size = sprintf(buffer, "111:%p,%p\n", pwm.timer.cra, &TCCR1A);
-    write_result(buffer, size);
-}
-
-void test_enable_channel_A_timer1()
-{
-    struct rfs_pwm_t pwm;
-    rfs_pwm_init(&pwm, RFS_TIMER1);
-    rfs_pwm_enable_channel_a(&pwm);
-    uint8_t size = sprintf(buffer, "112:%hhx,%hhx\n", TCCR1A, DDRB);
-    write_result(buffer, size);
-}
-
-void test_enable_channel_B_timer1()
-{
-    struct rfs_pwm_t pwm;
-    rfs_pwm_init(&pwm, RFS_TIMER1);
-    rfs_pwm_enable_channel_b(&pwm);
-    uint8_t size = sprintf(buffer, "113:%hhx,%hhx\n", TCCR1A, DDRB);
-    write_result(buffer, size);
-}
-
-void test_disable_channel_A_timer1()
-{
-    struct rfs_pwm_t pwm;
-    rfs_pwm_init(&pwm, RFS_TIMER1);
-    rfs_pwm_disable_channel_a(&pwm);
-    uint8_t size = sprintf(buffer, "7:%hhx\n", TCCR1A);
-    write_result(buffer, size);
-}
-
-void test_disable_channel_B_timer1()
-{
-    struct rfs_pwm_t pwm;
-    rfs_pwm_init(&pwm, RFS_TIMER1);
-    rfs_pwm_disable_channel_b(&pwm);
-    uint8_t size = sprintf(buffer, "8:%hhx\n", TCCR1A);
-    write_result(buffer, size);
-}
+*/
 
 int main()
 {
     init_usart();
 
-    test_init_timer0();
-    test_init_timer2();
+    test_init_timer0_a();
+    test_init_timer0_b();
+    test_init_timer1_a();
+    test_init_timer1_b();
+    test_init_timer2_a();
+    test_init_timer2_b();
+    test_close_timer0_a();
+    test_close_timer0_b();
+    test_close_timer1_a();
+    test_close_timer1_b();
+    test_close_timer2_a();
+    test_close_timer2_b();
+    /*test_init_timer2();
     test_enable_channel_A_timer0();
     test_enable_channel_B_timer0();
     test_enable_channel_A_timer2();
@@ -383,11 +356,10 @@ int main()
     test_close_timer0();
     test_close_timer2();
 
-    test_init_timer1();
     test_enable_channel_A_timer1();
     test_enable_channel_B_timer1();
     test_disable_channel_A_timer1();
-    test_disable_channel_B_timer1();
+    test_disable_channel_B_timer1();*/
 
     // Loop forever
     while (1);

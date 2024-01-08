@@ -34,9 +34,7 @@ along with RobotsFromScratch; see the file COPYING.  If not, see
  * @param mask The part of the register to modify (the bits in 1)
  * @param value The new bits to set in register
  */
-#define rfs_bits_setmask(register, mask, value) \
-    (register) &= ~(mask); \
-    (register) |= (value);
+#define rfs_bits_set_mask(register, mask, value)    (register) = ((register) & ~(mask)) | (value)
 
 /**
  * @brief If value is one, set bit on register. Otherwise, reset it.
@@ -45,8 +43,6 @@ along with RobotsFromScratch; see the file COPYING.  If not, see
  * @param bit The bit to set in register
  * @param value New value of bit in register
  */
-#define rfs_bits_setbit(register, bit, value) \
-    (register) &= ~_BV(bit); \
-    (register) |= ((value) << (bit));
+#define rfs_bits_set_bit(register, bit, value)  (register) = ((register) & ~_BV(bit)) | ((value) << (bit))
 
 #endif
