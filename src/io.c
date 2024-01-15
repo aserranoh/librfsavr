@@ -28,13 +28,13 @@ void rfs_pin_init(struct rfs_pin_t *pin, volatile uint8_t *port, int8_t pin_numb
     pin->pin = pin_number;
 }
 
-void rfs_pin_set_input(struct rfs_pin_t *pin)
+void rfs_pin_set_input(const struct rfs_pin_t *pin)
 {
     rfs_pin_zero(rfs_ddr(pin), pin->pin);
     rfs_pin_zero(pin->port, pin->pin);
 }
 
-void rfs_pin_set_input_pullup(struct rfs_pin_t *pin)
+void rfs_pin_set_input_pullup(const struct rfs_pin_t *pin)
 {
     rfs_pin_zero(rfs_ddr(pin), pin->pin);
     rfs_pin_one(pin->port, pin->pin);

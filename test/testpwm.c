@@ -154,26 +154,34 @@ void test_close_timer2_b()
     write_result(buffer, size);
 }
 
-/*
-
-void test_set_frequency_timer0(uint8_t test_id, uint32_t frequency)
+void test_set_frequency_hint_timer0(uint8_t test_id, uint32_t frequency)
 {
     struct rfs_pwm_t pwm;
-    rfs_pwm_init(&pwm, RFS_TIMER0);
-    rfs_pwm_set_frequency(&pwm, frequency, F_CPU);
+    rfs_pwm_init(&pwm, RFS_TIMER0, RFS_PWM_CHANNEL_A);
+    rfs_pwm_set_frequency_hint(&pwm, frequency, F_CPU);
     uint8_t size = sprintf(buffer, "%hhu:%hhx,%hhx\n", test_id, TCCR0A, TCCR0B);
     write_result(buffer, size);
 }
 
-void test_set_frequency_timer2(uint8_t test_id, uint32_t frequency)
+void test_set_frequency_hint_timer2(uint8_t test_id, uint32_t frequency)
 {
     struct rfs_pwm_t pwm;
-    rfs_pwm_init(&pwm, RFS_TIMER2);
-    rfs_pwm_set_frequency(&pwm, frequency, F_CPU);
+    rfs_pwm_init(&pwm, RFS_TIMER2, RFS_PWM_CHANNEL_B);
+    rfs_pwm_set_frequency_hint(&pwm, frequency, F_CPU);
     uint8_t size = sprintf(buffer, "%hhu:%hhx,%hhx\n", test_id, TCCR2A, TCCR2B);
     write_result(buffer, size);
 }
 
+void test_set_frequency_hint_timer1(uint8_t test_id, uint32_t frequency)
+{
+    struct rfs_pwm_t pwm;
+    rfs_pwm_init(&pwm, RFS_TIMER1, RFS_PWM_CHANNEL_A);
+    rfs_pwm_set_frequency_hint(&pwm, frequency, F_CPU);
+    uint8_t size = sprintf(buffer, "%hhu:%hhx,%hhx\n", test_id, TCCR1A, TCCR1B);
+    write_result(buffer, size);
+}
+
+/*
 void test_set_frequency_exact_timer0(uint8_t test_id, uint32_t frequency)
 {
     struct rfs_pwm_t pwm;
@@ -246,58 +254,73 @@ int main()
     test_close_timer1_b();
     test_close_timer2_a();
     test_close_timer2_b();
-    /*test_init_timer2();
-    test_enable_channel_A_timer0();
-    test_enable_channel_B_timer0();
-    test_enable_channel_A_timer2();
-    test_enable_channel_B_timer2();
-    test_disable_channel_A_timer0();
-    test_disable_channel_B_timer0();
-    test_disable_channel_A_timer2();
-    test_disable_channel_B_timer2();
-    test_set_frequency_timer0(11, 63000);
-    test_set_frequency_timer0(12, 62500);
-    test_set_frequency_timer0(13, 31251);
-    test_set_frequency_timer0(14, 31250);
-    test_set_frequency_timer0(15, 7813);
-    test_set_frequency_timer0(16, 7812);
-    test_set_frequency_timer0(17, 3907);
-    test_set_frequency_timer0(18, 3906);
-    test_set_frequency_timer0(19, 977);
-    test_set_frequency_timer0(20, 976);
-    test_set_frequency_timer0(21, 489);
-    test_set_frequency_timer0(22, 488);
-    test_set_frequency_timer0(23, 245);
-    test_set_frequency_timer0(24, 244);
-    test_set_frequency_timer0(25, 123);
-    test_set_frequency_timer0(26, 122);
-    test_set_frequency_timer0(27, 62);
-    test_set_frequency_timer0(28, 61);
-    test_set_frequency_timer0(29, 31);
-    test_set_frequency_timer0(30, 30);
-    test_set_frequency_timer2(31, 63000);
-    test_set_frequency_timer2(32, 62500);
-    test_set_frequency_timer2(33, 31251);
-    test_set_frequency_timer2(34, 31250);
-    test_set_frequency_timer2(35, 7813);
-    test_set_frequency_timer2(36, 7812);
-    test_set_frequency_timer2(37, 3907);
-    test_set_frequency_timer2(38, 3906);
-    test_set_frequency_timer2(39, 1954);
-    test_set_frequency_timer2(40, 1953);
-    test_set_frequency_timer2(41, 977);
-    test_set_frequency_timer2(42, 976);
-    test_set_frequency_timer2(43, 489);
-    test_set_frequency_timer2(44, 488);
-    test_set_frequency_timer2(45, 245);
-    test_set_frequency_timer2(46, 244);
-    test_set_frequency_timer2(47, 123);
-    test_set_frequency_timer2(48, 122);
-    test_set_frequency_timer2(49, 62);
-    test_set_frequency_timer2(50, 61);
-    test_set_frequency_timer2(51, 31);
-    test_set_frequency_timer2(52, 30);
-    test_set_frequency_exact_timer0(53, 70000);
+    test_set_frequency_hint_timer0(13, 62501);
+    test_set_frequency_hint_timer0(14, 62500);
+    test_set_frequency_hint_timer0(15, 31251);
+    test_set_frequency_hint_timer0(16, 31250);
+    test_set_frequency_hint_timer0(17, 7813);
+    test_set_frequency_hint_timer0(18, 7812);
+    test_set_frequency_hint_timer0(19, 3907);
+    test_set_frequency_hint_timer0(20, 3906);
+    test_set_frequency_hint_timer0(21, 977);
+    test_set_frequency_hint_timer0(22, 976);
+    test_set_frequency_hint_timer0(23, 489);
+    test_set_frequency_hint_timer0(24, 488);
+    test_set_frequency_hint_timer0(25, 245);
+    test_set_frequency_hint_timer0(26, 244);
+    test_set_frequency_hint_timer0(27, 123);
+    test_set_frequency_hint_timer0(28, 122);
+    test_set_frequency_hint_timer0(29, 62);
+    test_set_frequency_hint_timer0(30, 61);
+    test_set_frequency_hint_timer0(31, 31);
+    test_set_frequency_hint_timer0(32, 30);
+    test_set_frequency_hint_timer2(33, 62501);
+    test_set_frequency_hint_timer2(34, 62500);
+    test_set_frequency_hint_timer2(35, 31251);
+    test_set_frequency_hint_timer2(36, 31250);
+    test_set_frequency_hint_timer2(37, 7813);
+    test_set_frequency_hint_timer2(38, 7812);
+    test_set_frequency_hint_timer2(39, 3907);
+    test_set_frequency_hint_timer2(40, 3906);
+    test_set_frequency_hint_timer2(41, 1954);
+    test_set_frequency_hint_timer2(42, 1953);
+    test_set_frequency_hint_timer2(43, 977);
+    test_set_frequency_hint_timer2(44, 976);
+    test_set_frequency_hint_timer2(45, 489);
+    test_set_frequency_hint_timer2(46, 488);
+    test_set_frequency_hint_timer2(47, 245);
+    test_set_frequency_hint_timer2(48, 244);
+    test_set_frequency_hint_timer2(49, 123);
+    test_set_frequency_hint_timer2(50, 122);
+    test_set_frequency_hint_timer2(51, 62);
+    test_set_frequency_hint_timer2(52, 61);
+    test_set_frequency_hint_timer2(53, 31);
+    test_set_frequency_hint_timer2(54, 30);
+    test_set_frequency_hint_timer1(55, 62501);
+    test_set_frequency_hint_timer1(56, 62500);
+    test_set_frequency_hint_timer1(57, 31251);
+    test_set_frequency_hint_timer1(58, 31250);
+    test_set_frequency_hint_timer1(59, 15626);
+    test_set_frequency_hint_timer1(60, 15625);
+    test_set_frequency_hint_timer1(61, 7813);
+    test_set_frequency_hint_timer1(62, 7812);
+    test_set_frequency_hint_timer1(63, 1954);
+    test_set_frequency_hint_timer1(64, 1953);
+    test_set_frequency_hint_timer1(65, 977);
+    test_set_frequency_hint_timer1(66, 976);
+    test_set_frequency_hint_timer1(67, 245);
+    test_set_frequency_hint_timer1(68, 244);
+    test_set_frequency_hint_timer1(69, 123);
+    test_set_frequency_hint_timer1(70, 122);
+    test_set_frequency_hint_timer1(71, 62);
+    test_set_frequency_hint_timer1(72, 61);
+    test_set_frequency_hint_timer1(73, 31);
+    test_set_frequency_hint_timer1(74, 30);
+    test_set_frequency_hint_timer1(75, 16);
+    test_set_frequency_hint_timer1(76, 15);
+    test_set_frequency_hint_timer1(77, 8);
+    test_set_frequency_hint_timer1(78, 7);
+    /*test_set_frequency_exact_timer0(53, 70000);
     test_set_frequency_exact_timer0(54, 62501);
     test_set_frequency_exact_timer0(55, 62500);
     test_set_frequency_exact_timer0(56, 31251);
@@ -352,14 +375,7 @@ int main()
     test_set_duty_cycle_channel_a_timer2(105, 255);
     test_set_duty_cycle_channel_b_timer2(106, 0);
     test_set_duty_cycle_channel_b_timer2(107, 128);
-    test_set_duty_cycle_channel_b_timer2(108, 255);
-    test_close_timer0();
-    test_close_timer2();
-
-    test_enable_channel_A_timer1();
-    test_enable_channel_B_timer1();
-    test_disable_channel_A_timer1();
-    test_disable_channel_B_timer1();*/
+    test_set_duty_cycle_channel_b_timer2(108, 255);*/
 
     // Loop forever
     while (1);

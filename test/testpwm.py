@@ -10,7 +10,7 @@ PWM_PROGRAM = "testpwm.hex"
 COMM_BAUDS = 19200
 SLEEP_TIME = 2
 #ALL_TESTS_SIZE = 115
-ALL_TESTS_SIZE = 12
+ALL_TESTS_SIZE = 78
 CHANNEL_A = 0
 CHANNEL_B = 1
 OUTPUT_PIN_TIMER0_CHANNEL_A = 6
@@ -32,10 +32,16 @@ CRB_MODE_MASK = 0b00011000
 CLOCK_MASK = 0b00000111
 PWM_MODE_FAST = 3
 PWM_MODE_PHASE_CORRECT = 1
+PWM_MODE_FAST_8 = 0b101
+PWM_MODE_FAST_9 = 0b110
+PWM_MODE_FAST_10 = 0b111
+PWM_MODE_PHASE_CORRECT_8 = 0b001
+PWM_MODE_PHASE_CORRECT_9 = 0b010
+PWM_MODE_PHASE_CORRECT_10 = 0b011
 
 def get_values(data: list[str]) -> list[int]:
     values = [int(x, base=16) for x in data]
-    print(values)
+    print([hex(x) for x in values])
     return values
 
 def check_test_init(channel: int, pin: int) -> Callable[[list[str]], bool]:
@@ -63,9 +69,15 @@ def check_test_close(channel: int) -> Callable[[list[str]], bool]:
 
 def check_test_set_frequency(clock: int, mode: int) -> Callable[[list[str]], bool]:
     def check_frequency(data: list[str]):
-        values = [int(x, base=16) for x in data]
-        print(values)
+        values = get_values(data)
         return (values[0] & CRA_MODE_MASK == mode) and (values[1] & CRB_MODE_MASK == 0) and (values[1] & CLOCK_MASK == clock)
+    return check_frequency
+
+def check_test_set_frequency_16(clock: int, mode: int) -> Callable[[list[str]], bool]:
+    def check_frequency(data: list[str]):
+        values = get_values(data)
+        read_mode = (values[0] & CRA_MODE_MASK) | ((values[1] & CRB_MODE_MASK) >> 1)
+        return (read_mode == mode) and (values[1] & CLOCK_MASK == clock)
     return check_frequency
 
 def check_test_set_frequency_exact(clock: int, mode: int, ocra: int) -> Callable[[list[str]], bool]:
@@ -95,8 +107,6 @@ TESTS_CHECKS = {
     10: check_test_close(CHANNEL_B),
     11: check_test_close(CHANNEL_A),
     12: check_test_close(CHANNEL_B),
-    #11: check_test_set_frequency(1, PWM_MODE_FAST),
-    #12: check_test_set_frequency(1, PWM_MODE_FAST),
     13: check_test_set_frequency(1, PWM_MODE_FAST),
     14: check_test_set_frequency(1, PWM_MODE_PHASE_CORRECT),
     15: check_test_set_frequency(1, PWM_MODE_PHASE_CORRECT),
@@ -115,8 +125,8 @@ TESTS_CHECKS = {
     28: check_test_set_frequency(5, PWM_MODE_FAST),
     29: check_test_set_frequency(5, PWM_MODE_FAST),
     30: check_test_set_frequency(5, PWM_MODE_PHASE_CORRECT),
-    31: check_test_set_frequency(1, PWM_MODE_FAST),
-    32: check_test_set_frequency(1, PWM_MODE_FAST),
+    31: check_test_set_frequency(5, PWM_MODE_PHASE_CORRECT),
+    32: check_test_set_frequency(5, PWM_MODE_PHASE_CORRECT),
     33: check_test_set_frequency(1, PWM_MODE_FAST),
     34: check_test_set_frequency(1, PWM_MODE_PHASE_CORRECT),
     35: check_test_set_frequency(1, PWM_MODE_PHASE_CORRECT),
@@ -126,48 +136,76 @@ TESTS_CHECKS = {
     39: check_test_set_frequency(2, PWM_MODE_PHASE_CORRECT),
     40: check_test_set_frequency(3, PWM_MODE_FAST),
     41: check_test_set_frequency(3, PWM_MODE_FAST),
-    42: check_test_set_frequency(4, PWM_MODE_FAST),
-    43: check_test_set_frequency(4, PWM_MODE_FAST),
-    44: check_test_set_frequency(5, PWM_MODE_FAST),
-    45: check_test_set_frequency(5, PWM_MODE_FAST),
-    46: check_test_set_frequency(6, PWM_MODE_FAST),
-    47: check_test_set_frequency(6, PWM_MODE_FAST),
+    42: check_test_set_frequency(3, PWM_MODE_PHASE_CORRECT),
+    43: check_test_set_frequency(3, PWM_MODE_PHASE_CORRECT),
+    44: check_test_set_frequency(4, PWM_MODE_PHASE_CORRECT),
+    45: check_test_set_frequency(4, PWM_MODE_PHASE_CORRECT),
+    46: check_test_set_frequency(5, PWM_MODE_PHASE_CORRECT),
+    47: check_test_set_frequency(5, PWM_MODE_PHASE_CORRECT),
     48: check_test_set_frequency(6, PWM_MODE_PHASE_CORRECT),
     49: check_test_set_frequency(6, PWM_MODE_PHASE_CORRECT),
     50: check_test_set_frequency(7, PWM_MODE_FAST),
     51: check_test_set_frequency(7, PWM_MODE_FAST),
     52: check_test_set_frequency(7, PWM_MODE_PHASE_CORRECT),
-    53: check_test_set_frequency_exact(1, PWM_MODE_FAST, 228),
-    54: check_test_set_frequency_exact(1, PWM_MODE_FAST, 255),
-    55: check_test_set_frequency_exact(1, PWM_MODE_PHASE_CORRECT, 128),
-    56: check_test_set_frequency_exact(1, PWM_MODE_PHASE_CORRECT, 255),
-    57: check_test_set_frequency_exact(2, PWM_MODE_FAST, 64),
-    58: check_test_set_frequency_exact(2, PWM_MODE_FAST, 255),
-    59: check_test_set_frequency_exact(2, PWM_MODE_PHASE_CORRECT, 128),
-    60: check_test_set_frequency_exact(2, PWM_MODE_PHASE_CORRECT, 255),
-    61: check_test_set_frequency_exact(3, PWM_MODE_FAST, 64),
-    62: check_test_set_frequency_exact(3, PWM_MODE_FAST, 255),
-    63: check_test_set_frequency_exact(3, PWM_MODE_PHASE_CORRECT, 128),
-    64: check_test_set_frequency_exact(3, PWM_MODE_PHASE_CORRECT, 255),
-    65: check_test_set_frequency_exact(4, PWM_MODE_FAST, 128),
-    66: check_test_set_frequency_exact(4, PWM_MODE_FAST, 255),
-    67: check_test_set_frequency_exact(4, PWM_MODE_PHASE_CORRECT, 128),
-    68: check_test_set_frequency_exact(4, PWM_MODE_PHASE_CORRECT, 254),
-    69: check_test_set_frequency_exact(5, PWM_MODE_FAST, 128),
-    70: check_test_set_frequency_exact(5, PWM_MODE_FAST, 252),
-    71: check_test_set_frequency_exact(5, PWM_MODE_PHASE_CORRECT, 128),
-    72: check_test_set_frequency_exact(5, PWM_MODE_PHASE_CORRECT, 252),
-    73: check_test_set_frequency_exact(5, PWM_MODE_PHASE_CORRECT, 255),
-    74: check_test_set_frequency_exact(1, PWM_MODE_FAST, 228),
-    75: check_test_set_frequency_exact(1, PWM_MODE_FAST, 255),
-    76: check_test_set_frequency_exact(1, PWM_MODE_PHASE_CORRECT, 128),
-    77: check_test_set_frequency_exact(1, PWM_MODE_PHASE_CORRECT, 255),
-    78: check_test_set_frequency_exact(2, PWM_MODE_FAST, 64),
-    79: check_test_set_frequency_exact(2, PWM_MODE_FAST, 255),
-    80: check_test_set_frequency_exact(2, PWM_MODE_PHASE_CORRECT, 128),
-    81: check_test_set_frequency_exact(2, PWM_MODE_PHASE_CORRECT, 255),
-    82: check_test_set_frequency_exact(3, PWM_MODE_FAST, 128),
-    83: check_test_set_frequency_exact(3, PWM_MODE_FAST, 255),
+    53: check_test_set_frequency(7, PWM_MODE_PHASE_CORRECT),
+    54: check_test_set_frequency(7, PWM_MODE_PHASE_CORRECT),
+
+    55: check_test_set_frequency_16(1, PWM_MODE_FAST_8),
+    56: check_test_set_frequency_16(1, PWM_MODE_PHASE_CORRECT_8),
+    57: check_test_set_frequency_16(1, PWM_MODE_PHASE_CORRECT_8),
+    58: check_test_set_frequency_16(1, PWM_MODE_PHASE_CORRECT_9),
+    59: check_test_set_frequency_16(1, PWM_MODE_PHASE_CORRECT_9),
+    60: check_test_set_frequency_16(1, PWM_MODE_PHASE_CORRECT_10),
+    61: check_test_set_frequency_16(1, PWM_MODE_PHASE_CORRECT_10),
+    62: check_test_set_frequency_16(2, PWM_MODE_FAST_10),
+    63: check_test_set_frequency_16(2, PWM_MODE_FAST_10),
+    64: check_test_set_frequency_16(2, PWM_MODE_PHASE_CORRECT_10),
+    65: check_test_set_frequency_16(2, PWM_MODE_PHASE_CORRECT_10),
+    66: check_test_set_frequency_16(3, PWM_MODE_FAST_10),
+    67: check_test_set_frequency_16(3, PWM_MODE_FAST_10),
+    68: check_test_set_frequency_16(3, PWM_MODE_PHASE_CORRECT_10),
+    69: check_test_set_frequency_16(3, PWM_MODE_PHASE_CORRECT_10),
+    70: check_test_set_frequency_16(4, PWM_MODE_FAST_10),
+    71: check_test_set_frequency_16(4, PWM_MODE_FAST_10),
+    72: check_test_set_frequency_16(4, PWM_MODE_PHASE_CORRECT_10),
+    73: check_test_set_frequency_16(4, PWM_MODE_PHASE_CORRECT_10),
+    74: check_test_set_frequency_16(5, PWM_MODE_FAST_10),
+    75: check_test_set_frequency_16(5, PWM_MODE_FAST_10),
+    76: check_test_set_frequency_16(5, PWM_MODE_PHASE_CORRECT_10),
+    77: check_test_set_frequency_16(5, PWM_MODE_PHASE_CORRECT_10),
+    78: check_test_set_frequency_16(5, PWM_MODE_PHASE_CORRECT_10),
+
+    #53: check_test_set_frequency_exact(1, PWM_MODE_FAST, 228),
+    #54: check_test_set_frequency_exact(1, PWM_MODE_FAST, 255),
+    #55: check_test_set_frequency_exact(1, PWM_MODE_PHASE_CORRECT, 128),
+    #56: check_test_set_frequency_exact(1, PWM_MODE_PHASE_CORRECT, 255),
+    #57: check_test_set_frequency_exact(2, PWM_MODE_FAST, 64),
+    #58: check_test_set_frequency_exact(2, PWM_MODE_FAST, 255),
+    #59: check_test_set_frequency_exact(2, PWM_MODE_PHASE_CORRECT, 128),
+    #60: check_test_set_frequency_exact(2, PWM_MODE_PHASE_CORRECT, 255),
+    #61: check_test_set_frequency_exact(3, PWM_MODE_FAST, 64),
+    #62: check_test_set_frequency_exact(3, PWM_MODE_FAST, 255),
+    #63: check_test_set_frequency_exact(3, PWM_MODE_PHASE_CORRECT, 128),
+    #64: check_test_set_frequency_exact(3, PWM_MODE_PHASE_CORRECT, 255),
+    #65: check_test_set_frequency_exact(4, PWM_MODE_FAST, 128),
+    #66: check_test_set_frequency_exact(4, PWM_MODE_FAST, 255),
+    #67: check_test_set_frequency_exact(4, PWM_MODE_PHASE_CORRECT, 128),
+    #68: check_test_set_frequency_exact(4, PWM_MODE_PHASE_CORRECT, 254),
+    #69: check_test_set_frequency_exact(5, PWM_MODE_FAST, 128),
+    #70: check_test_set_frequency_exact(5, PWM_MODE_FAST, 252),
+    #71: check_test_set_frequency_exact(5, PWM_MODE_PHASE_CORRECT, 128),
+    #72: check_test_set_frequency_exact(5, PWM_MODE_PHASE_CORRECT, 252),
+    #73: check_test_set_frequency_exact(5, PWM_MODE_PHASE_CORRECT, 255),
+    #74: check_test_set_frequency_exact(1, PWM_MODE_FAST, 228),
+    #75: check_test_set_frequency_exact(1, PWM_MODE_FAST, 255),
+    #76: check_test_set_frequency_exact(1, PWM_MODE_PHASE_CORRECT, 128),
+    #77: check_test_set_frequency_exact(1, PWM_MODE_PHASE_CORRECT, 255),
+    #78: check_test_set_frequency_exact(2, PWM_MODE_FAST, 64),
+    #79: check_test_set_frequency_exact(2, PWM_MODE_FAST, 255),
+    #80: check_test_set_frequency_exact(2, PWM_MODE_PHASE_CORRECT, 128),
+    #81: check_test_set_frequency_exact(2, PWM_MODE_PHASE_CORRECT, 255),
+    #82: check_test_set_frequency_exact(3, PWM_MODE_FAST, 128),
+    #83: check_test_set_frequency_exact(3, PWM_MODE_FAST, 255),
     84: check_test_set_frequency_exact(3, PWM_MODE_PHASE_CORRECT, 128),
     85: check_test_set_frequency_exact(3, PWM_MODE_PHASE_CORRECT, 255),
     86: check_test_set_frequency_exact(4, PWM_MODE_PHASE_CORRECT, 128),

@@ -40,9 +40,11 @@ enum rfs_pwm_channel {
 struct rfs_pwm_t {
     struct rfs_timer_t timer;
     enum rfs_pwm_channel channel;
-    struct rfs_pin_t *pin;
+    const struct rfs_pin_t *pin;
     volatile uint8_t *ocr;
-    struct rfs_list_u16_t *divisor_table;
+    const struct rfs_list_u16_t *divisor_table;
+    void (*set_frequency)(const struct rfs_pwm_t *, uint32_t, uint32_t);
+    void (*set_frequency_hint)(const struct rfs_pwm_t *, uint32_t, uint32_t);
 };
 
 /**
@@ -59,26 +61,7 @@ void rfs_pwm_init(struct rfs_pwm_t *pwm, enum rfs_timer_enum timer, enum rfs_pwm
  * 
  * @param pwm The structure that contains the PWM information
  */
-void rfs_pwm_close(struct rfs_pwm_t *pwm);
-
-/**
- * @brief Set the PWM signal frequency
- * 
- * This method does not set the exact requested frequency, but the closest frequency that can be obtained
- * using the clock prescaling values. The selected frequency will always be higher than the
- * requested frequency, except when the requested frequency is higher than the maximum frequency that can
- * be obtained.
- * 
- * The list of predefined frequencies depend on the CPU clock frequency. The predefined frequencies are those
- * obtained of dividing the CPU clock frequency by 256, 512, 2048, 4096, 16384, 32768, 65536, 131072, 262144
- * and 524288. For instance, for a CPU clock frequency of 16 MHz, the predefined PWM frequencies are:
- * 62.5 kHz, 31.25 kHz, 7812.5 Hz, 3906.25 Hz, 976.56 Hz, 488.28 Hz, 244.14 Hz, 122.07 Hz, 61.04 Hz and 30.52 Hz.
- * 
- * @param pwm The structure that contains the PWM information
- * @param frequency The requested PWM signal frequency
- * @param cpu_frequency The CPU's clock frequency
- */
-void rfs_pwm_set_frequency(struct rfs_pwm_t *pwm, uint32_t frequency, uint32_t cpu_frequency);
+void rfs_pwm_close(const struct rfs_pwm_t *pwm);
 
 /**
  * @brief Set an extact value for the PWM signal frequency
@@ -99,7 +82,32 @@ void rfs_pwm_set_frequency(struct rfs_pwm_t *pwm, uint32_t frequency, uint32_t c
  * @param frequency The requested PWM signal frequency
  * @param cpu_frequency The CPU's clock frequency
  */
-void rfs_pwm_set_frequency_exact(struct rfs_pwm_t *pwm, uint32_t frequency, uint32_t cpu_frequency);
+inline void rfs_pwm_set_frequency(const struct rfs_pwm_t *pwm, uint32_t frequency, uint32_t cpu_frequency)
+{
+    pwm->set_frequency(pwm, frequency, cpu_frequency);
+}
+
+/**
+ * @brief Set the PWM signal frequency
+ * 
+ * This method does not set the exact requested frequency, but the closest frequency that can be obtained
+ * using the clock prescaling values. The selected frequency will always be higher than the
+ * requested frequency, except when the requested frequency is higher than the maximum frequency that can
+ * be obtained.
+ * 
+ * The list of predefined frequencies depend on the CPU clock frequency. The predefined frequencies are those
+ * obtained of dividing the CPU clock frequency by 256, 512, 2048, 4096, 16384, 32768, 65536, 131072, 262144
+ * and 524288. For instance, for a CPU clock frequency of 16 MHz, the predefined PWM frequencies are:
+ * 62.5 kHz, 31.25 kHz, 7812.5 Hz, 3906.25 Hz, 976.56 Hz, 488.28 Hz, 244.14 Hz, 122.07 Hz, 61.04 Hz and 30.52 Hz.
+ * 
+ * @param pwm The structure that contains the PWM information
+ * @param frequency The requested PWM signal frequency
+ * @param cpu_frequency The CPU's clock frequency
+ */
+inline void rfs_pwm_set_frequency_hint(const struct rfs_pwm_t *pwm, uint32_t frequency, uint32_t cpu_frequency)
+{
+    pwm->set_frequency_hint(pwm, frequency, cpu_frequency);
+}
 
 /**
  * @brief Set the duty cycle for channel A of the given PWM module (8-bit timer)

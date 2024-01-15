@@ -67,21 +67,21 @@ void rfs_pin_init(struct rfs_pin_t *pin, volatile uint8_t *port, int8_t pin_numb
  * 
  * @param pin The pin to configure as input
  */
-void rfs_pin_set_input(struct rfs_pin_t *pin);
+void rfs_pin_set_input(const struct rfs_pin_t *pin);
 
 /**
  * @brief Configure the given pin as input and enable the pull-up resistor
  * 
  * @param pin The pin to configure as input
  */
-void rfs_pin_set_input_pullup(struct rfs_pin_t *pin);
+void rfs_pin_set_input_pullup(const struct rfs_pin_t *pin);
 
 /**
  * @brief Configure the given pin as output
  * 
  * @param pin The pin to configure as output
  */
-inline void rfs_pin_set_output(struct rfs_pin_t *pin)
+inline void rfs_pin_set_output(const struct rfs_pin_t *pin)
 {
     rfs_pin_one(rfs_ddr(pin), pin->pin);
 }
@@ -93,7 +93,7 @@ inline void rfs_pin_set_output(struct rfs_pin_t *pin)
  * 
  * @return Zero if the pin is not active, or a value different than zero otherwise
  */
-inline uint8_t rfs_pin_read(struct rfs_pin_t *pin)
+inline uint8_t rfs_pin_read(const struct rfs_pin_t *pin)
 {
     return *rfs_pin(pin) & _BV(pin->pin);
 }
@@ -103,7 +103,7 @@ inline uint8_t rfs_pin_read(struct rfs_pin_t *pin)
  * 
  * @param pin The pin to set
  */
-inline void rfs_pin_set(struct rfs_pin_t *pin)
+inline void rfs_pin_set(const struct rfs_pin_t *pin)
 {
     rfs_pin_one(pin->port, pin->pin);
 }
@@ -113,7 +113,7 @@ inline void rfs_pin_set(struct rfs_pin_t *pin)
  * 
  * @param pin The pin to reset
  */
-inline void rfs_pin_reset(struct rfs_pin_t *pin)
+inline void rfs_pin_reset(const struct rfs_pin_t *pin)
 {
     rfs_pin_zero(pin->port, pin->pin);
 }
@@ -123,7 +123,7 @@ inline void rfs_pin_reset(struct rfs_pin_t *pin)
  * 
  * @param pin The pin to read at the PORT register
  */
-inline uint8_t rfs_pin_readport(struct rfs_pin_t *pin)
+inline uint8_t rfs_pin_readport(const struct rfs_pin_t *pin)
 {
     return *pin->port & _BV(pin->pin);
 }
@@ -133,7 +133,7 @@ inline uint8_t rfs_pin_readport(struct rfs_pin_t *pin)
  * 
  * @param pin The pin to toggle at the PORT register
  */
-inline void rfs_pin_toggle(struct rfs_pin_t *pin)
+inline void rfs_pin_toggle(const struct rfs_pin_t *pin)
 {
     rfs_pin_one(rfs_ddr(pin), pin->pin);
 }

@@ -25,13 +25,13 @@ along with RobotsFromScratch; see the file COPYING.  If not, see
 static uint16_t RFS_TIMER_DIVISOR_TABLE_0[] = {1, 8, 64, 256, 1024};
 static uint16_t RFS_TIMER_DIVISOR_TABLE_2[] = {1, 8, 32, 64, 128, 256, 1024};
 
-struct rfs_list_u16_t RFS_TIMER_DIVISOR_TABLE[3] = {
+const struct rfs_list_u16_t RFS_TIMER_DIVISOR_TABLE[3] = {
     {RFS_TIMER_DIVISOR_TABLE_0, 5},
     {RFS_TIMER_DIVISOR_TABLE_0, 5},
     {RFS_TIMER_DIVISOR_TABLE_2, 7}
 };
 
-struct rfs_pin_t RFS_TIMER_COMPARE_OUTPUT[RFS_TIMER_COUNT][RFS_TIMER_CHANNELS_COUNT] = {
+const struct rfs_pin_t RFS_TIMER_COMPARE_OUTPUT[RFS_TIMER_COUNT][RFS_TIMER_CHANNELS_COUNT] = {
     {{&PORTD, 6}, {&PORTD, 5}},
     {{&PORTB, 1}, {&PORTB, 2}},
     {{&PORTB, 3}, {&PORTD, 3}}
@@ -58,7 +58,7 @@ void rfs_timer_init(struct rfs_timer_t *timer, enum rfs_timer_enum which)
     }
 }
 
-void rfs_timer_set_mode_8(struct rfs_timer_t *timer, enum rfs_timer_mode_8 mode)
+void rfs_timer_set_mode_8(const struct rfs_timer_t *timer, enum rfs_timer_mode_8 mode)
 {
     rfs_bits_set_mask(*timer->cra, RFS_TIMER_CRA_MODE_MASK, mode & RFS_TIMER_CRA_MODE_MASK);
     rfs_bits_set_mask(*rfs_timer_crb(timer), RFS_TIMER_CRB_MODE_MASK, mode & RFS_TIMER_CRB_MODE_MASK);
