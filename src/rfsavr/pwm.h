@@ -119,20 +119,9 @@ inline void rfs_pwm_set_frequency_hint(const struct rfs_pwm_t *pwm, uint32_t fre
  * @param pwm The structure that contains the PWM information
  * @param duty_cycle The new duty cycle
  */
-inline void rfs_pwm_set_duty_cycle_channel_a_8(struct rfs_pwm_t *pwm, uint8_t duty_cycle)
+inline void rfs_pwm_set_duty_cycle_8(struct rfs_pwm_t *pwm, uint8_t duty_cycle)
 {
-    rfs_timer_set_ocra_8(&pwm->timer, duty_cycle);
-}
-
-/**
- * @brief Set the duty cycle for channel B of the given PWM module (8-bit timer)
- * 
- * @param pwm The structure that contains the PWM information
- * @param duty_cycle The new duty cycle
- */
-inline void rfs_pwm_set_duty_cycle_channel_b_8(struct rfs_pwm_t *pwm, uint8_t duty_cycle)
-{
-    rfs_timer_set_ocrb_8(&pwm->timer, duty_cycle);
+    *pwm->ocr = duty_cycle;
 }
 
 #endif
