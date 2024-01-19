@@ -50,8 +50,8 @@ void test_init_timer0_a()
 {
     struct rfs_pwm_t pwm;
     rfs_pwm_init(&pwm, RFS_TIMER0, RFS_PWM_CHANNEL_A);
-    uint8_t size = sprintf(buffer, "1:%p,%p,%p,%p,%p,%p,%p,%p,%p,%p,%hhx,%hhx,%hhx\n", pwm.timer.cra, &TCCR0A, pwm.timer.ocra, &OCR0A, pwm.timer.ocrb, &OCR0B,
-        pwm.pin->port, &PORTD, pwm.ocr, &OCR0A, pwm.channel, pwm.pin->pin, TCCR0A);
+    uint8_t size = sprintf(buffer, "1:%p,%p,%p,%p,%p,%p,%p,%p,%p,%p,%hhx,%hhx,%hhx\n", pwm.timer.cra, &TCCR0A, pwm.timer.ocra8, &OCR0A, pwm.timer.ocrb8, &OCR0B,
+        pwm.pin->port, &PORTD, pwm.ocr8, &OCR0A, pwm.channel, pwm.pin->pin, TCCR0A);
     write_result(buffer, size);
 }
 
@@ -59,8 +59,8 @@ void test_init_timer0_b()
 {
     struct rfs_pwm_t pwm;
     rfs_pwm_init(&pwm, RFS_TIMER0, RFS_PWM_CHANNEL_B);
-    uint8_t size = sprintf(buffer, "2:%p,%p,%p,%p,%p,%p,%p,%p,%p,%p,%hhx,%hhx,%hhx\n", pwm.timer.cra, &TCCR0A, pwm.timer.ocra, &OCR0A, pwm.timer.ocrb, &OCR0B,
-        pwm.pin->port, &PORTD, pwm.ocr, &OCR0B, pwm.channel, pwm.pin->pin, TCCR0A);
+    uint8_t size = sprintf(buffer, "2:%p,%p,%p,%p,%p,%p,%p,%p,%p,%p,%hhx,%hhx,%hhx\n", pwm.timer.cra, &TCCR0A, pwm.timer.ocra8, &OCR0A, pwm.timer.ocrb8, &OCR0B,
+        pwm.pin->port, &PORTD, pwm.ocr8, &OCR0B, pwm.channel, pwm.pin->pin, TCCR0A);
     write_result(buffer, size);
 }
 
@@ -68,8 +68,8 @@ void test_init_timer1_a()
 {
     struct rfs_pwm_t pwm;
     rfs_pwm_init(&pwm, RFS_TIMER1, RFS_PWM_CHANNEL_A);
-    uint8_t size = sprintf(buffer, "3:%p,%p,%p,%p,%p,%p,%p,%p,%p,%p,%hhx,%hhx,%hhx\n", pwm.timer.cra, &TCCR1A, pwm.timer.ocra, &OCR1AL, pwm.timer.ocrb, &OCR1BL,
-        pwm.pin->port, &PORTB, pwm.ocr, &OCR1AL, pwm.channel, pwm.pin->pin, TCCR1A);
+    uint8_t size = sprintf(buffer, "3:%p,%p,%p,%p,%p,%p,%p,%p,%p,%p,%hhx,%hhx,%hhx\n", pwm.timer.cra, &TCCR1A, pwm.timer.ocra16, &OCR1AL, pwm.timer.ocrb16, &OCR1BL,
+        pwm.pin->port, &PORTB, pwm.ocr16, &OCR1AL, pwm.channel, pwm.pin->pin, TCCR1A);
     write_result(buffer, size);
 }
 
@@ -77,8 +77,8 @@ void test_init_timer1_b()
 {
     struct rfs_pwm_t pwm;
     rfs_pwm_init(&pwm, RFS_TIMER1, RFS_PWM_CHANNEL_B);
-    uint8_t size = sprintf(buffer, "4:%p,%p,%p,%p,%p,%p,%p,%p,%p,%p,%hhx,%hhx,%hhx\n", pwm.timer.cra, &TCCR1A, pwm.timer.ocra, &OCR1AL, pwm.timer.ocrb, &OCR1BL,
-        pwm.pin->port, &PORTB, pwm.ocr, &OCR1BL, pwm.channel, pwm.pin->pin, TCCR1A);
+    uint8_t size = sprintf(buffer, "4:%p,%p,%p,%p,%p,%p,%p,%p,%p,%p,%hhx,%hhx,%hhx\n", pwm.timer.cra, &TCCR1A, pwm.timer.ocra16, &OCR1AL, pwm.timer.ocrb16, &OCR1BL,
+        pwm.pin->port, &PORTB, pwm.ocr16, &OCR1BL, pwm.channel, pwm.pin->pin, TCCR1A);
     write_result(buffer, size);
 }
 
@@ -86,8 +86,8 @@ void test_init_timer2_a()
 {
     struct rfs_pwm_t pwm;
     rfs_pwm_init(&pwm, RFS_TIMER2, RFS_PWM_CHANNEL_A);
-    uint8_t size = sprintf(buffer, "5:%p,%p,%p,%p,%p,%p,%p,%p,%p,%p,%hhx,%hhx,%hhx\n", pwm.timer.cra, &TCCR2A, pwm.timer.ocra, &OCR2A, pwm.timer.ocrb, &OCR2B,
-        pwm.pin->port, &PORTB, pwm.ocr, &OCR2A, pwm.channel, pwm.pin->pin, TCCR2A);
+    uint8_t size = sprintf(buffer, "5:%p,%p,%p,%p,%p,%p,%p,%p,%p,%p,%hhx,%hhx,%hhx\n", pwm.timer.cra, &TCCR2A, pwm.timer.ocra8, &OCR2A, pwm.timer.ocrb8, &OCR2B,
+        pwm.pin->port, &PORTB, pwm.ocr8, &OCR2A, pwm.channel, pwm.pin->pin, TCCR2A);
     write_result(buffer, size);
 }
 
@@ -95,8 +95,8 @@ void test_init_timer2_b()
 {
     struct rfs_pwm_t pwm;
     rfs_pwm_init(&pwm, RFS_TIMER2, RFS_PWM_CHANNEL_B);
-    uint8_t size = sprintf(buffer, "6:%p,%p,%p,%p,%p,%p,%p,%p,%p,%p,%hhx,%hhx,%hhx\n", pwm.timer.cra, &TCCR2A, pwm.timer.ocra, &OCR2A, pwm.timer.ocrb, &OCR2B,
-        pwm.pin->port, &PORTD, pwm.ocr, &OCR2B, pwm.channel, pwm.pin->pin, TCCR2A);
+    uint8_t size = sprintf(buffer, "6:%p,%p,%p,%p,%p,%p,%p,%p,%p,%p,%hhx,%hhx,%hhx\n", pwm.timer.cra, &TCCR2A, pwm.timer.ocra8, &OCR2A, pwm.timer.ocrb8, &OCR2B,
+        pwm.pin->port, &PORTD, pwm.ocr8, &OCR2B, pwm.channel, pwm.pin->pin, TCCR2A);
     write_result(buffer, size);
 }
 
@@ -204,7 +204,7 @@ void test_set_frequency_timer1(uint8_t test_id, uint32_t frequency)
     struct rfs_pwm_t pwm;
     rfs_pwm_init(&pwm, RFS_TIMER1, RFS_PWM_CHANNEL_A);
     rfs_pwm_set_frequency(&pwm, frequency, F_CPU);
-    uint8_t size = sprintf(buffer, "%hhu:%hhx,%hhx,%hx\n", test_id, TCCR1A, TCCR1B, OCR1A);
+    uint8_t size = sprintf(buffer, "%hhu:%hhx,%hhx,%hx\n", test_id, TCCR1A, TCCR1B, ICR1);
     write_result(buffer, size);
 }
 
@@ -241,6 +241,24 @@ void test_set_duty_cycle_channel_b_timer2(uint8_t test_id, uint8_t duty_cycle)
     rfs_pwm_init(&pwm, RFS_TIMER2, RFS_PWM_CHANNEL_B);
     rfs_pwm_set_duty_cycle_8(&pwm, duty_cycle);
     uint8_t size = sprintf(buffer, "%hhu:%hhx\n", test_id, OCR2B);
+    write_result(buffer, size);
+}
+
+void test_set_duty_cycle_channel_a_timer1(uint8_t test_id, uint16_t duty_cycle)
+{
+    struct rfs_pwm_t pwm;
+    rfs_pwm_init(&pwm, RFS_TIMER1, RFS_PWM_CHANNEL_A);
+    rfs_pwm_set_duty_cycle_16(&pwm, duty_cycle);
+    uint8_t size = sprintf(buffer, "%hhu:%hx\n", test_id, OCR1A);
+    write_result(buffer, size);
+}
+
+void test_set_duty_cycle_channel_b_timer1(uint8_t test_id, uint16_t duty_cycle)
+{
+    struct rfs_pwm_t pwm;
+    rfs_pwm_init(&pwm, RFS_TIMER1, RFS_PWM_CHANNEL_B);
+    rfs_pwm_set_duty_cycle_16(&pwm, duty_cycle);
+    uint8_t size = sprintf(buffer, "%hhu:%hx\n", test_id, OCR1B);
     write_result(buffer, size);
 }
 
@@ -395,6 +413,12 @@ int main()
     test_set_duty_cycle_channel_b_timer2(145, 0);
     test_set_duty_cycle_channel_b_timer2(146, 128);
     test_set_duty_cycle_channel_b_timer2(147, 255);
+    test_set_duty_cycle_channel_a_timer1(148, 0);
+    test_set_duty_cycle_channel_a_timer1(149, 32768);
+    test_set_duty_cycle_channel_a_timer1(150, 65535);
+    test_set_duty_cycle_channel_b_timer1(151, 0);
+    test_set_duty_cycle_channel_b_timer1(152, 32768);
+    test_set_duty_cycle_channel_b_timer1(153, 65535);
 
     // Loop forever
     while (1);

@@ -41,7 +41,10 @@ struct rfs_pwm_t {
     struct rfs_timer_t timer;
     enum rfs_pwm_channel channel;
     const struct rfs_pin_t *pin;
-    volatile uint8_t *ocr;
+    union {
+        volatile uint8_t *ocr8;
+        volatile uint16_t *ocr16;
+    };
     const struct rfs_list_u16_t *divisor_table;
     void (*set_frequency)(const struct rfs_pwm_t *, uint32_t, uint32_t);
     void (*set_frequency_hint)(const struct rfs_pwm_t *, uint32_t, uint32_t);
@@ -110,7 +113,7 @@ inline void rfs_pwm_set_frequency_hint(const struct rfs_pwm_t *pwm, uint32_t fre
 }
 
 /**
- * @brief Set the duty cycle for channel A of the given PWM module (8-bit timer)
+ * @brief Set the duty cycle (8-bit timer)
  * 
  * Note that this method shouldn't be used if we are using an exact frequency, because the exact
  * frequency requires the top value to be in the OCRXA register. Thus, when an exact frequency
@@ -121,7 +124,18 @@ inline void rfs_pwm_set_frequency_hint(const struct rfs_pwm_t *pwm, uint32_t fre
  */
 inline void rfs_pwm_set_duty_cycle_8(struct rfs_pwm_t *pwm, uint8_t duty_cycle)
 {
-    *pwm->ocr = duty_cycle;
+    *pwm->ocr8 = duty_cycle;
+}
+
+/**
+ * @brief Set the duty cycle (16-bit timer)
+ * 
+ * @param pwm The structure that contains the PWM information
+ * @param duty_cycle The new duty cycle
+ */
+inline void rfs_pwm_set_duty_cycle_16(struct rfs_pwm_t *pwm, uint16_t duty_cycle)
+{
+    *pwm->ocr16 = duty_cycle;
 }
 
 #endif

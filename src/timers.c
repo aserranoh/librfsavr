@@ -42,18 +42,18 @@ void rfs_timer_init(struct rfs_timer_t *timer, enum rfs_timer_enum which)
     switch (which) {
     case RFS_TIMER0:
         timer->cra = &TCCR0A;
-        timer->ocra = &OCR0A;
-        timer->ocrb = &OCR0B;
+        timer->ocra8 = &OCR0A;
+        timer->ocrb8 = &OCR0B;
         break;
     case RFS_TIMER1:
         timer->cra = &TCCR1A;
-        timer->ocra = &OCR1AL;
-        timer->ocrb = &OCR1BL;
+        timer->ocra16 = &OCR1A;
+        timer->ocrb16 = &OCR1B;
         break;
     case RFS_TIMER2:
         timer->cra = &TCCR2A;
-        timer->ocra = &OCR2A;
-        timer->ocrb = &OCR2B;
+        timer->ocra8 = &OCR2A;
+        timer->ocrb8 = &OCR2B;
         break;
     }
 }

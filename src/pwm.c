@@ -60,10 +60,18 @@ void rfs_pwm_init(struct rfs_pwm_t *pwm, enum rfs_timer_enum timer, enum rfs_pwm
     pwm->set_frequency_hint = RFS_PWM_SET_FREQUENCY_FUNCTION_TABLE_HINT[timer];
     if (channel == RFS_PWM_CHANNEL_A) {
         rfs_timer_set_compare_match_output_mode_a(&pwm->timer, RFS_TIMER_COMA_NONINVERT);
-        pwm->ocr = pwm->timer.ocra;
+        if (timer == RFS_TIMER0 || timer == RFS_TIMER2) {
+            pwm->ocr8 = pwm->timer.ocra8;
+        } else {
+            pwm->ocr16 = pwm->timer.ocra16;
+        }
     } else {
         rfs_timer_set_compare_match_output_mode_b(&pwm->timer, RFS_TIMER_COMB_NONINVERT);
-        pwm->ocr = pwm->timer.ocrb;
+        if (timer == RFS_TIMER0 || timer == RFS_TIMER2) {
+            pwm->ocr8 = pwm->timer.ocrb8;
+        } else {
+            pwm->ocr16 = pwm->timer.ocrb16;
+        }
     }
 }
 
@@ -129,7 +137,7 @@ static void rfs_pwm_set_frequency_16(const struct rfs_pwm_t *pwm, uint32_t frequ
     
     rfs_timer_set_mode_16(&pwm->timer, (divisor_mode.mode << 3) | 0b10010);
     rfs_timer_set_clock(&pwm->timer, divisor_mode.divisor + 1);
-    rfs_timer_set_ocra_16(&pwm->timer, (divisor > max_frequency) ? (cpu_frequency/divisor) : 0xffff);
+    rfs_timer_set_icr(&pwm->timer, (divisor > max_frequency) ? (cpu_frequency/divisor) : 0xffff);
 }
 
 static void rfs_pwm_set_frequency_hint_8(const struct rfs_pwm_t *pwm, uint32_t frequency, uint32_t cpu_frequency)

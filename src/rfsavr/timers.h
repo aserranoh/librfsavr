@@ -44,8 +44,14 @@ along with RobotsFromScratch; see the file COPYING.  If not, see
  */
 struct rfs_timer_t {
     volatile uint8_t *cra;
-    volatile uint8_t *ocra;
-    volatile uint8_t *ocrb;
+    union {
+        volatile uint8_t *ocra8;
+        volatile uint16_t *ocra16;
+    };
+    union {
+        volatile uint8_t *ocrb8;
+        volatile uint16_t *ocrb16;
+    };
 };
 
 /**
@@ -55,7 +61,7 @@ struct rfs_timer_t {
 #define rfs_timer_crc(timer)        ((timer)->cra + 2)
 #define rfs_timer_cnt_8(timer)      ((timer)->cra + 2)
 #define rfs_timer_cnt_16(timer)     ((timer)->cra + 4)
-#define rfs_timer_icr_16(timer)     ((timer)->cra + 6)
+#define rfs_timer_icr(timer)        (uint16_t *)((timer)->cra + 6)
 
 /**
  * @brief Enumeration with the valid timers
@@ -262,6 +268,17 @@ inline void rfs_timer_set_compare_match_output_mode_b(const struct rfs_timer_t *
 }
 
 /**
+ * @brief Set the Input Capture value (ICR), only available for a 16-bit timer
+ * 
+ * @param timer The structure that contains the timer information
+ * @param value The new ICR value
+ */
+inline void rfs_timer_set_icr(const struct rfs_timer_t *timer, uint16_t value)
+{
+    *rfs_timer_icr(timer) = value;
+}
+
+/**
  * @brief Set the timer mode (8-bit)
  * 
  * @param timer The structure that contains the timer information
@@ -284,44 +301,44 @@ inline void rfs_timer_set_mode_16(const struct rfs_timer_t *timer, enum rfs_time
  * @brief Set the Output Compare value for channel A (OCRA), for an 8-bit timer
  * 
  * @param timer The structure that contains the timer information
- * @param mode The new OCRA value
+ * @param ocra The new OCRA value
  */
 inline void rfs_timer_set_ocra_8(const struct rfs_timer_t *timer, uint8_t ocra)
 {
-    *timer->ocra = ocra;
+    *timer->ocra8 = ocra;
 }
 
 /**
  * @brief Set the Output Compare value for channel A (OCRA), for a 16-bit timer
  * 
  * @param timer The structure that contains the timer information
- * @param value The new OCRA value
+ * @param ocra The new OCRA value
  */
-inline void rfs_timer_set_ocra_16(const struct rfs_timer_t *timer, uint16_t value)
+inline void rfs_timer_set_ocra_16(const struct rfs_timer_t *timer, uint16_t ocra)
 {
-    *(uint16_t *)timer->ocra = value;
+    *timer->ocra16 = ocra;
 }
 
 /**
  * @brief Set the Output Compare value for channel B (OCRB), for an 8-bit timer
  * 
  * @param timer The structure that contains the timer information
- * @param mode The new OCRB value
+ * @param ocrb The new OCRB value
  */
 inline void rfs_timer_set_ocrb_8(const struct rfs_timer_t *timer, uint8_t ocrb)
 {
-    *timer->ocrb = ocrb;
+    *timer->ocrb8 = ocrb;
 }
 
 /**
  * @brief Set the Output Compare value for channel B (OCRB), for a 16-bit timer
  * 
  * @param timer The structure that contains the timer information
- * @param value The new OCRB value
+ * @param ocrb The new OCRB value
  */
-inline void rfs_timer_set_ocrb_16(const struct rfs_timer_t *timer, uint16_t value)
+inline void rfs_timer_set_ocrb_16(const struct rfs_timer_t *timer, uint16_t ocrb)
 {
-    *(uint16_t *)timer->ocrb = value;
+    *timer->ocrb16 = ocrb;
 }
 
 /**
