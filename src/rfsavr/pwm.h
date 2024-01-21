@@ -51,7 +51,7 @@ struct rfs_pwm_t {
 };
 
 /**
- * @brief Initialize the PWM
+ * @brief Initialize the PWM structure
  * 
  * @param pwm The structure that contains the PWM information
  * @param timer Which timer to use to control the PWM signal
@@ -122,7 +122,7 @@ inline void rfs_pwm_set_frequency_hint(const struct rfs_pwm_t *pwm, uint32_t fre
  * @param pwm The structure that contains the PWM information
  * @param duty_cycle The new duty cycle
  */
-inline void rfs_pwm_set_duty_cycle_8(struct rfs_pwm_t *pwm, uint8_t duty_cycle)
+inline void rfs_pwm_set_duty_cycle_8(const struct rfs_pwm_t *pwm, uint8_t duty_cycle)
 {
     *pwm->ocr8 = duty_cycle;
 }
@@ -133,7 +133,7 @@ inline void rfs_pwm_set_duty_cycle_8(struct rfs_pwm_t *pwm, uint8_t duty_cycle)
  * @param pwm The structure that contains the PWM information
  * @param duty_cycle The new duty cycle
  */
-inline void rfs_pwm_set_duty_cycle_16(struct rfs_pwm_t *pwm, uint16_t duty_cycle)
+inline void rfs_pwm_set_duty_cycle_16(const struct rfs_pwm_t *pwm, uint16_t duty_cycle)
 {
     *pwm->ocr16 = duty_cycle;
 }

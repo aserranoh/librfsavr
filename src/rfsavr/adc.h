@@ -160,7 +160,7 @@ int8_t rfs_adc_get16(uint16_t *result);
  */
 inline void rfs_adc_setadjustment(enum rfs_adc_adjustment adjustment)
 {
-    rfs_bits_setbit(ADMUX, ADLAR, adjustment);
+    rfs_bits_set_bit(ADMUX, ADLAR, adjustment);
 }
 
 /**
@@ -170,7 +170,7 @@ inline void rfs_adc_setadjustment(enum rfs_adc_adjustment adjustment)
  */
 inline void rfs_adc_setautotrigger(int8_t enabled)
 {
-    rfs_bits_setbit(ADCSRA, ADATE, enabled);
+    rfs_bits_set_bit(ADCSRA, ADATE, enabled);
 }
 
 /**
@@ -180,7 +180,7 @@ inline void rfs_adc_setautotrigger(int8_t enabled)
  */
 inline void rfs_adc_setautotriggersource(enum rfs_adc_autotriggersource source)
 {
-    rfs_bits_setmask(ADCSRB, RFS_ADC_AUTO_TRIGGER_SOURCE_MASK, source);
+    rfs_bits_set_mask(ADCSRB, RFS_ADC_AUTO_TRIGGER_SOURCE_MASK, source);
 }
 
 /**
@@ -190,7 +190,7 @@ inline void rfs_adc_setautotriggersource(enum rfs_adc_autotriggersource source)
  */
 inline void rfs_adc_setchannel(enum rfs_adc_channel channel)
 {
-    rfs_bits_setmask(ADMUX, RFS_ADC_CHANNEL_MASK, channel);
+    rfs_bits_set_mask(ADMUX, RFS_ADC_CHANNEL_MASK, channel);
 }
 
 /**
@@ -200,7 +200,7 @@ inline void rfs_adc_setchannel(enum rfs_adc_channel channel)
  */
 inline void rfs_adc_setenabled(int8_t enabled)
 {
-    rfs_bits_setbit(ADCSRA, ADEN, enabled);
+    rfs_bits_set_bit(ADCSRA, ADEN, enabled);
 }
 
 /**
@@ -210,7 +210,7 @@ inline void rfs_adc_setenabled(int8_t enabled)
  */
 inline void rfs_adc_setinterruptenabled(int8_t enabled)
 {
-    rfs_bits_setbit(ADCSRA, ADIE, enabled);
+    rfs_bits_set_bit(ADCSRA, ADIE, enabled);
 }
 
 /**
@@ -220,7 +220,7 @@ inline void rfs_adc_setinterruptenabled(int8_t enabled)
  */
 inline void rfs_adc_setprescaler(enum rfs_adc_prescaler prescaler)
 {
-    rfs_bits_setmask(ADCSRA, RFS_ADC_PRESCALER_MASK, prescaler);
+    rfs_bits_set_mask(ADCSRA, RFS_ADC_PRESCALER_MASK, prescaler);
 }
 
 /**
@@ -230,7 +230,7 @@ inline void rfs_adc_setprescaler(enum rfs_adc_prescaler prescaler)
  */
 inline void rfs_adc_setreference(enum rfs_adc_reference reference)
 {
-    rfs_bits_setmask(ADMUX, RFS_ADC_VOLTAGE_REF_MASK, reference);
+    rfs_bits_set_mask(ADMUX, RFS_ADC_VOLTAGE_REF_MASK, reference);
 }
 
 /**

@@ -420,6 +420,27 @@ int main()
     test_set_duty_cycle_channel_b_timer1(152, 32768);
     test_set_duty_cycle_channel_b_timer1(153, 65535);
 
+    struct rfs_pwm_t pwm;
+
+    // Example 1
+    // Initialize the PWM signal, using timer 0 and channel A
+    rfs_pwm_init(&pwm, RFS_TIMER0, RFS_PWM_CHANNEL_A);
+
+    // Set a frequency close to 50 kHz
+    rfs_pwm_set_frequency_hint(&pwm, 50000, F_CPU);
+
+    // Set the duty cycle to 50%
+    rfs_pwm_set_duty_cycle_8(&pwm, 128);
+
+    // Initialize the PWM signal, using timer 1 (16 bit) and channel A
+    rfs_pwm_init(&pwm, RFS_TIMER1, RFS_PWM_CHANNEL_A);
+
+    // Set an exact frequency of 50 Hz
+    rfs_pwm_set_frequency(&pwm, 50, F_CPU);
+
+    // Set the duty cycle to 1.5 ms
+    rfs_pwm_set_duty_cycle_16(&pwm, 1.5 * 65536 / 20);
+
     // Loop forever
     while (1);
 }

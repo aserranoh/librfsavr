@@ -8,8 +8,8 @@ AM_TESTS_ENVIRONMENT = AVR_DEV='$(AVR_DEV)'; export AVR_DEV; AVR_PROGRAMMING_BAU
 	$(OBJCOPY) -O ihex -R .eeprom $< $@
 
 check_PROGRAMS = testusart.bin testleds.bin testpwm.bin
-TESTBIN_CFLAGS = $(CPU_FREQ) $(MCU_FLAG) -I$(top_srcdir)/src
-TESTBIN_LDADD = $(top_builddir)/src/librfsavr.la
+TESTBIN_CFLAGS = $(CPU_FREQ) -mmcu=atmega328p -I$(top_srcdir)/src
+TESTBIN_LDADD = $(top_builddir)/src/librfsavr-atmega328p.la
 
 testusart_bin_SOURCES = testusart.c
 testusart_bin_CFLAGS = $(TESTBIN_CFLAGS)

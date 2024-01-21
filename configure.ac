@@ -23,13 +23,6 @@ AVR_CHECK_OBJCOPY
 # create a set of default compilation flags in an "avr_defaults.m4" file and
 # reuse them in all of our projects.  (See avr_defaults.m4)
 
-# Here we test to make sure we don't have a value ALREADY inside MCU_FLAG before we set it.
-# Only if we do NOT have a value in MCU_FLAG (MCU_FLAG is empty, x$MCU_FLAG = x) do we SUBST
-# our default value
-if test "x$MCU_FLAG" = "x" ; then
-AC_SUBST([MCU_FLAG], [avr_DEFAULT_MMCU])
-fi
-
 if test "x$CPU_FREQ" = "x" ; then
 AC_SUBST([CPU_FREQ], [avr_DEFAULT_CPUFREQ])
 fi

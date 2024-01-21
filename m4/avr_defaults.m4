@@ -1,6 +1,3 @@
-dnl Our default MCU argument (-mmcu) for the avr-gcc assembler/compiler
-AC_DEFUN([avr_DEFAULT_MMCU], [-mmcu=atmega328p])
-
 dnl Our default CPU fequency
 AC_DEFUN([avr_DEFAULT_CPUFREQ], [-DF_CPU=16000000UL])
 
